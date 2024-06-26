@@ -20,9 +20,8 @@ CREATE TYPE status_enum AS ENUM (
     );
 
 -- User Table
-CREATE TABLE "User"
-(
-    id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE MEMBER (
+    id      BIGINT AUTO_INCREMENT PRIMARY KEY,
     name     TEXT        NOT NULL,
     nickname TEXT UNIQUE NOT NULL,
     location TEXT
@@ -39,7 +38,7 @@ CREATE TABLE Post
     description TEXT NOT NULL,
     condition   TEXT,
     status      status_enum,
-    FOREIGN KEY (poster_id) REFERENCES "User" (id)
+    FOREIGN KEY (poster_id) REFERENCES "MEMBER" (id)
 );
 
 -- Comment Table
@@ -50,7 +49,7 @@ CREATE TABLE Comment
     commenter_id   BIGINT,
     post_id        BIGINT,
     date_commented TIMESTAMP,
-    FOREIGN KEY (commenter_id) REFERENCES "User" (id),
+    FOREIGN KEY (commenter_id) REFERENCES "MEMBER" (id),
     FOREIGN KEY (post_id) REFERENCES Post (id)
 );
 
