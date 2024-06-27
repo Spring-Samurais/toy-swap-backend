@@ -57,7 +57,7 @@ class ListingControllerTest {
 
         when(mockListingService.getAllListings()).thenReturn(listings);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/listings"))
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/listings"))
                 .andExpectAll(MockMvcResultMatchers.status().isOk());
     }
 
