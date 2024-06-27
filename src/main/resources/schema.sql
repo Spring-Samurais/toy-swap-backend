@@ -28,7 +28,7 @@ CREATE TABLE MEMBER (
 );
 
 -- Post Table
-CREATE TABLE Post
+CREATE TABLE Listing
 (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     photo       BYTEA,
@@ -50,7 +50,7 @@ CREATE TABLE Comment
     post_id        BIGINT,
     date_commented TIMESTAMP,
     FOREIGN KEY (commenter_id) REFERENCES "MEMBER" (id),
-    FOREIGN KEY (post_id) REFERENCES Post (id)
+    FOREIGN KEY (post_id) REFERENCES Listing (id)
 );
 
 -- Image Table
@@ -60,5 +60,5 @@ CREATE TABLE Image
     image_name TEXT  NOT NULL,
     post_id    BIGINT,
     image      BYTEA NOT NULL,
-    FOREIGN KEY (post_id) REFERENCES Post (id)
+    FOREIGN KEY (post_id) REFERENCES Listing (id)
 );

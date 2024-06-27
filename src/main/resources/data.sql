@@ -4,8 +4,8 @@ INSERT INTO MEMBER (name, nickname, location) VALUES  ('Willy Smith', 'wsmithy',
 --------------------------------------------------------------------------------------------------------------------
 
 
-INSERT INTO Post (photo, poster_id, date_posted, category, description, condition, status)
+INSERT INTO Listing (photo, poster_id, date_posted, category, description, condition, status)
 VALUES (NULL, 1, CURRENT_TIMESTAMP, 'ACTION_FIGURES', 'John\''s action figure', 'New', 'AVAILABLE');
 
-INSERT INTO Post (photo, poster_id, date_posted, category, description, condition, status)
+INSERT INTO Listing (photo, poster_id, date_posted, category, description, condition, status)
 VALUES ('', 2, CURRENT_TIMESTAMP, 'DOLLS', 'Jane''s doll', 'Used', 'AVAILABLE');
