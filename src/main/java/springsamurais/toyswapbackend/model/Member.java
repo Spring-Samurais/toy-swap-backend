@@ -5,28 +5,36 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Blob;
+import javax.validation.constraints.NotNull;
+
+
+
+import java.util.List;
 
 @Entity
-@Table(name = "image")
+@Table(name = "member")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Image {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String imageName;
+    @NotNull
+    private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(unique = true)
+    @NotNull
+    private String nickname;
+
+
+    private String location;
+
+    @Column
+    @OneToMany(fetch = FetchType.LAZY)
     //@JoinColumn(name = "", nullable = false)
-    private Listing listing;
-
-    @Lob
-    @Column(nullable = false)
-    private Blob image;
+    private List<Listing> listings;
 
 }
