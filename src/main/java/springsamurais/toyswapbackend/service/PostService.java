@@ -1,3 +1,8 @@
 package springsamurais.toyswapbackend.service;
 
-public class PostService {}
+import springsamurais.toyswapbackend.model.Listing;
+
+interface PostService {
+
+    Listing addListing(Listing listing);
+}
