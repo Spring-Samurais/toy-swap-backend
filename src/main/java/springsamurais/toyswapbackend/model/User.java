@@ -22,11 +22,12 @@ public class User {
     @NotNull
     private String nickname;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "", nullable = false)
+
     private String location;
 
     @Column
+    @OneToMany(fetch = FetchType.LAZY)
+    //@JoinColumn(name = "", nullable = false)
     private List<Listing> listings;
 
     // Constructors
