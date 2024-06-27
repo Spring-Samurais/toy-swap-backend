@@ -38,7 +38,7 @@ public class Listing {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ItemCondition condition;
 
     @Enumerated(EnumType.STRING)
