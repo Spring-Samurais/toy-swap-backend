@@ -33,7 +33,7 @@ public class Member {
     private String location;
 
     @Column
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     //@JoinColumn(name = "", nullable = false)
     private List<Listing> listings;
 
