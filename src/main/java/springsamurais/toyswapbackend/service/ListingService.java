@@ -1,3 +1,9 @@
 package springsamurais.toyswapbackend.service;
 
-public interface ListingService {}
+import springsamurais.toyswapbackend.model.Listing;
+
+import java.util.List;
+
+public interface ListingService {
+   List<Listing> getAllListings();
+}

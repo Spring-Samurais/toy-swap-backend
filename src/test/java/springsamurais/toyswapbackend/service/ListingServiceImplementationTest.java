@@ -49,7 +49,7 @@ class ListingServiceImplementationTest {
 
         assertEquals(2,result.size());
         assertEquals("A listing test",result.getFirst().getTitle());
-        assertEquals("I am a description :-",result.getFirst().getDescription());
+        assertEquals("I am a description :-)",result.getFirst().getDescription());
         assertEquals("Another listing test",result.getLast().getTitle());
     }
 
