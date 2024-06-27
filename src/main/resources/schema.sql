@@ -32,13 +32,13 @@ CREATE TABLE Listing
 (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     photo       BYTEA,
-    poster_id   BIGINT,
+    listing_id   BIGINT,
     date_posted TIMESTAMP,
     category    category_enum,
     description TEXT NOT NULL,
     condition   TEXT,
     status      status_enum,
-    FOREIGN KEY (poster_id) REFERENCES "MEMBER" (id)
+    FOREIGN KEY (listing_id) REFERENCES "MEMBER" (id)
 );
 
 -- Comment Table
@@ -47,10 +47,10 @@ CREATE TABLE Comment
     comment_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
     text           TEXT NOT NULL,
     commenter_id   BIGINT,
-    post_id        BIGINT,
+    listing_id        BIGINT,
     date_commented TIMESTAMP,
     FOREIGN KEY (commenter_id) REFERENCES "MEMBER" (id),
-    FOREIGN KEY (post_id) REFERENCES Listing (id)
+    FOREIGN KEY (listing_id) REFERENCES Listing (id)
 );
 
 -- Image Table
@@ -58,7 +58,7 @@ CREATE TABLE Image
 (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
     image_name TEXT  NOT NULL,
-    post_id    BIGINT,
+    listing_id    BIGINT,
     image      BYTEA NOT NULL,
-    FOREIGN KEY (post_id) REFERENCES Listing (id)
+    FOREIGN KEY (listing_id) REFERENCES Listing (id)
 );
