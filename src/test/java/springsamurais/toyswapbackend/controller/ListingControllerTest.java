@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.service.ListingServiceImplementation;
 
@@ -20,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -60,6 +61,32 @@ class ListingControllerTest {
         this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/listings"))
                 .andExpectAll(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(MockMvcResultMatchers.content().json(mapper.writeValueAsString(listings)));
+    }
+
+    @Test
+    @DisplayName("GET -> ByID")
+    void getByIdTest() throws Exception {
+        Listing listing = new Listing(1L, "A listing test", null, memberOne, null, Category.ACTION_FIGURES, "I am a description :-)", ItemCondition.GOOD, Status.AVAILABLE, null);
+        when(mockListingService.getListingById(1L)).thenReturn(listing);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/listings/1"))
+                .andExpectAll(MockMvcResultMatchers.status().isOk())
+                .andExpectAll(MockMvcResultMatchers.content().json(mapper.writeValueAsString(listing)));
+    }
+
+    @Test
+    @DisplayName("GET -> ByID  throws 404 and message ")
+    void testGetListingByIdWhenListingDoesNotExistThenReturnNotFound() throws Exception {
+
+        Long listingId = 1L;
+        when(mockListingService.getListingById(listingId)).thenThrow(new ListingNotFoundException("Listing with ID " + listingId + " not found"));
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/listings/{listingID}", listingId))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content().string("Listing with ID " + listingId + " not found"));
+
+        verify(mockListingService, times(1)).getListingById(listingId);
     }
 
 

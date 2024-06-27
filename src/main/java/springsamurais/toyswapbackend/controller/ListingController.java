@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.model.Listing;
 import springsamurais.toyswapbackend.service.ListingService;
 import springsamurais.toyswapbackend.service.ListingServiceImplementation;
@@ -23,6 +24,17 @@ public class ListingController {
     public ResponseEntity<List<Listing>> getAllItems() {
         List<Listing> listingList =listingService.getAllListings();
             return new ResponseEntity<>(listingList, HttpStatus.OK);
+    }
+
+    @GetMapping("/{listingID}")
+    public ResponseEntity<?> getListingById(@PathVariable("listingID") Long listingID) {
+        Listing listingFound;
+        try{
+            listingFound = listingService.getListingById(listingID);
+        } catch (ListingNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(listingFound, HttpStatus.OK);
     }
 
     @PostMapping
