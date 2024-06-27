@@ -1,4 +1,4 @@
 package springsamurais.toyswapbackend.repository;
 
-public class GetInterface {
+public interface GetInterface {
 }
