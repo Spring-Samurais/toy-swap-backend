@@ -39,10 +39,10 @@ public class Listing {
     private String description;
 
     @Column(nullable = false)
-    private String condition;
+    private ItemCondition condition;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status statusListing;
 
     @OneToMany(mappedBy = "")
     private List<Comment> comments;
