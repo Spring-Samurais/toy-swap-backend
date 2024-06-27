@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springsamurais.toyswapbackend.model.Listing;
 import springsamurais.toyswapbackend.service.ListingService;
+import springsamurais.toyswapbackend.service.ListingServiceImplementation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +17,11 @@ import java.util.List;
 public class ListingController {
 
     @Autowired
-    private ListingService listingService;
+    private ListingServiceImplementation listingService;
 
     @GetMapping("")
     public ResponseEntity<List<Listing>> getAllItems() {
-        List<Listing> listingList = new ArrayList<>();
+        List<Listing> listingList =listingService.getAllListings();
             return new ResponseEntity<>(listingList, HttpStatus.OK);
     }
 
