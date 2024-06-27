@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-//@Table(name = "comments")
+@Table(name = "comment")
 public class Comment {
 
     @Id
@@ -20,7 +20,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     //@JoinColumn(name = "", nullable = false)
-    private Post post;
+    private Listing listing;
 
     private Date dateCommented;
 
@@ -28,11 +28,11 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(String text, User commenter, Post post, Date dateCommented) {
+    public Comment(String text, User commenter, Listing listing, Date dateCommented) {
 
         this.text = text;
         this.commenter = commenter;
-        this.post = post;
+        this.listing = listing;
         this.dateCommented = dateCommented;
     }
 
@@ -60,12 +60,12 @@ public class Comment {
         this.commenter = commenter;
     }
 
-    public Post getPost() {
-        return post;
+    public Listing getPost() {
+        return listing;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
+    public void setPost(Listing listing) {
+        this.listing = listing;
     }
 
     public Date getDateCommented() {

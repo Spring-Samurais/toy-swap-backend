@@ -6,8 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-//@Table(name = "post")
-public class Post {
+//@Table(name = "listing")
+public class Listing {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,10 +37,10 @@ public class Post {
     @OneToMany(mappedBy = "")
     private List<Comment> comments;
 
-    public Post() {
+    public Listing() {
     }
 
-    public Post( Blob photo, User poster, Date datePosted, Category category, String description, String condition, Status status, List<Comment> comments) {
+    public Listing(Blob photo, User poster, Date datePosted, Category category, String description, String condition, Status status, List<Comment> comments) {
 
         this.photo = photo;
         this.poster = poster;

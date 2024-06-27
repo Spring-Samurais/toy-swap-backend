@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-//@Table(name = "user")
+@Table(name = "user")
 public class User {
 
     @Id
@@ -21,21 +22,23 @@ public class User {
     @NotNull
     private String nickname;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    //@JoinColumn(name = "", nullable = false)
     private String location;
 
-
     @Column
-    private List<Post> posts;
+    private List<Listing> listings;
 
     // Constructors
     public User() {
     }
 
-    public User(String name, String nickname, String location, List<Post> posts) {
+    public User(String name, String nickname, String location, List<Listing> listings) {
         this.name = name;
         this.nickname = nickname;
         this.location = location;
-        this.posts = posts;
+        this.listings = new ArrayList<>();
+
     }
 
     // Getters and setters
@@ -71,12 +74,12 @@ public class User {
         this.location = location;
     }
 
-    public List<Post> getPosts() {
-        return posts;
+    public List<Listing> getPosts() {
+        return listings;
     }
 
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
+    public void setPosts(List<Listing> listings) {
+        this.listings = listings;
     }
 
 }

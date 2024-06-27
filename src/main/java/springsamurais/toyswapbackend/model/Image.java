@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.sql.Blob;
 
 @Entity
-//@Table(name = "images")
+@Table(name = "image")
 public class Image {
 
     @Id
@@ -17,7 +17,7 @@ public class Image {
 
     @ManyToOne(fetch = FetchType.LAZY)
     //@JoinColumn(name = "", nullable = false)
-    private Post post;
+    private Listing listing;
 
     @Lob
     @Column(nullable = false)
@@ -26,9 +26,9 @@ public class Image {
     public Image() {
     }
 
-    public Image(String imageName, Post post, Blob image) {
+    public Image(String imageName, Listing listing, Blob image) {
         this.imageName = imageName;
-        this.post = post;
+        this.listing = listing;
         this.image = image;
     }
 }
