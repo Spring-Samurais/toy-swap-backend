@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springsamurais.toyswapbackend.exception.ListingNotFoundException;
+import springsamurais.toyswapbackend.exception.*;
 import springsamurais.toyswapbackend.model.Listing;
 import springsamurais.toyswapbackend.service.ListingService;
 import springsamurais.toyswapbackend.service.ListingServiceImplementation;
@@ -61,7 +61,7 @@ public class ListingController {
         try {
             listingService.deleteListingsByMember(memberID);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (ListingNotFoundException e) {
+        } catch (ListingNotFoundException | MemberNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
