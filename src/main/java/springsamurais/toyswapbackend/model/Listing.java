@@ -26,7 +26,7 @@ public class Listing {
     @Lob
     private Blob photo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     //@JoinColumn(name = "", nullable = false)
     private Member member;
 
