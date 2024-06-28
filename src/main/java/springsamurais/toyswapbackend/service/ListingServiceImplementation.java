@@ -32,11 +32,17 @@ public class ListingServiceImplementation implements ListingService {
     }
 
     @Override
-    public Listing updateListing(Listing listing) throws ListingNotFoundException {
+    public Listing updateListing(Listing listing)  {
+
+        // validateListing(listing); validate listing implemented by Bilal
+
         if (!listingRepository.existsById(listing.getId())) {
-            throw new ListingNotFoundException("Listing not found");
+            throw new ListingNotFoundException("Listing with ID not found");
         }
         return listingRepository.save(listing);
+    }
+
+    private void validateUpdateListing(Listing listing) {
     }
 
 }

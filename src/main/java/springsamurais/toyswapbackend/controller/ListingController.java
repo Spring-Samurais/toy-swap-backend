@@ -4,12 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springsamurais.toyswapbackend.exception.ListingNotFoundException;
+import springsamurais.toyswapbackend.exception.*;
 import springsamurais.toyswapbackend.model.Listing;
-import springsamurais.toyswapbackend.service.ListingService;
 import springsamurais.toyswapbackend.service.ListingServiceImplementation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -42,12 +40,14 @@ public class ListingController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateItem(@RequestBody Listing listing) {
+    public ResponseEntity<?> updateListing(@RequestBody Listing listing) {
         try {
             Listing updatedListing = listingService.updateListing(listing);
             return new ResponseEntity<>(updatedListing, HttpStatus.OK);
         } catch (ListingNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }catch (InvalidListingException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -93,10 +93,6 @@ class ListingControllerTest {
 // Update Testings
     @Test
     void testUpdateListing_Success() throws Exception {
-//        listing = new Listing();
-//        listing.setId(1L);
-//        listing.setName("Toy");
-//        listing.setDescription("A fun toy");
 
         Listing listing = new Listing(1L, "A Update listing test", null, memberOne, null, Category.ACTION_FIGURES, "I am a Updated description :-)", ItemCondition.GOOD, Status.AVAILABLE, null);
         when(mockListingService.updateListing(listing)).thenReturn(listing);
@@ -112,7 +108,7 @@ class ListingControllerTest {
 
     @Test
     void testUpdateListing_NotFound() throws Exception {
-Listing listing = new Listing(1L, "A Update listing test", null, memberOne, null, Category.ACTION_FIGURES, "I am a Updated description :-)", ItemCondition.GOOD, Status.AVAILABLE, null);
+        Listing listing = new Listing(1L, "A Update listing test", null, memberOne, null, Category.ACTION_FIGURES, "I am a Updated description :-)", ItemCondition.GOOD, Status.AVAILABLE, null);
         doThrow(new ListingNotFoundException("Listing not found")).when(mockListingService).updateListing(listing);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/listings")
