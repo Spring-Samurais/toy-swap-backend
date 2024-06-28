@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface ListingRepository extends CrudRepository<Listing, Long> {
 
+
+
 }
 
 

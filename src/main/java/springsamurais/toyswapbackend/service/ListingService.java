@@ -7,4 +7,5 @@ import java.util.List;
 public interface ListingService {
    List<Listing> getAllListings();
    Listing getListingById(Long id);
+   Listing saveListing(Listing listing);
 }

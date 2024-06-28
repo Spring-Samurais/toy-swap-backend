@@ -89,6 +89,23 @@ class ListingControllerTest {
         verify(mockListingService, times(1)).getListingById(listingId);
     }
 
+    @Test
+    @DisplayName("POST -> Save Listing")
+    void saveListingTest() throws Exception {
+        Listing newListing = new Listing(null, "New listing test", null, memberOne, null, Category.CONSTRUCTION_TOYS, "New description", ItemCondition.USED, Status.AVAILABLE, null);
+        Listing savedListing = new Listing(3L, "New listing test", null, memberOne, null, Category.CONSTRUCTION_TOYS, "New description", ItemCondition.USED, Status.AVAILABLE, null);
+
+        when(mockListingService.saveListing(any(Listing.class))).thenReturn(savedListing);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/listings")
+                        .contentType("application/json")
+                        .content(mapper.writeValueAsString(newListing)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().string("Listing added with ID: " + savedListing.getId()));
+
+        verify(mockListingService, times(1)).saveListing(any(Listing.class));
+    }
+
 
 
 }

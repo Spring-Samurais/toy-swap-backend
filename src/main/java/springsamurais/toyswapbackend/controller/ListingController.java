@@ -6,10 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.model.Listing;
-import springsamurais.toyswapbackend.service.ListingService;
 import springsamurais.toyswapbackend.service.ListingServiceImplementation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -38,7 +36,9 @@ public class ListingController {
     }
 
     @PostMapping
-    public void addItem(@RequestBody Listing listing) {
+    public ResponseEntity<?> saveListing(@RequestBody Listing listing) {
+        Listing savedListing = listingService.saveListing(listing);
+        return new ResponseEntity<>("Listing added with ID: " + savedListing.getId(), HttpStatus.CREATED);
     }
 
     @PutMapping
