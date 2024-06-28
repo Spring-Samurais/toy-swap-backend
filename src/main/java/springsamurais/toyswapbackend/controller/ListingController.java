@@ -56,7 +56,15 @@ public class ListingController {
         }
     }
 
-
+    @DeleteMapping("/member/{memberID}")
+    public ResponseEntity<?> deleteItemsByMember(@PathVariable("memberID") Long memberID) {
+        try {
+            listingService.deleteListingsByMember(memberID);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ListingNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }
 
 

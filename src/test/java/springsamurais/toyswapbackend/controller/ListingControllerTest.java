@@ -100,4 +100,32 @@ class ListingControllerTest {
 
         verify(mockListingService).deleteListingById(listingID);
     }
+
+    @Test
+    void testDeleteListing_NotFound() throws Exception {
+        Long listingID = 1L;
+        doThrow(new ListingNotFoundException("Listing not found")).when(mockListingService).deleteListingById(listingID);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/{listingID}", listingID))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    void testDeleteListingsByMember_Success() throws Exception {
+        Long memberID = 1L;
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/member/{memberID}", memberID))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        verify(mockListingService).deleteListingsByMember(memberID);
+    }
+
+    @Test
+    void testDeleteListingsByMember_NotFound() throws Exception {
+        Long memberID = 1L;
+        doThrow(new ListingNotFoundException("No listings found for member")).when(mockListingService).deleteListingsByMember(memberID);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/member/{memberID}", memberID))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
 }

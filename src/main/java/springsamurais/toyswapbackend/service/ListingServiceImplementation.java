@@ -37,4 +37,15 @@ public class ListingServiceImplementation implements ListingService {
         listingRepository.delete(listing);
     }
 
+    @Override
+    public void deleteListingsByMember(Long memberID) throws ListingNotFoundException {
+        List<Listing> listings = listingRepository.findByMemberId(memberID);
+        if (listings.isEmpty()) {
+            throw new ListingNotFoundException("No listings found for member");
+        }
+        listingRepository.deleteAll(listings);
+    }
+
+
+
 }

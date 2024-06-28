@@ -10,5 +10,6 @@ public interface ListingService {
    Listing getListingById(Long id);
 
    void deleteListingById(Long listingID) throws ListingNotFoundException;
+   void deleteListingsByMember(Long memberID) throws ListingNotFoundException;
 
 }
