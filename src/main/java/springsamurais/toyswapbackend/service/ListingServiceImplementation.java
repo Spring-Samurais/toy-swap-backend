@@ -34,7 +34,9 @@ public class ListingServiceImplementation implements ListingService {
 
     @Override
     public void deleteListingById(Long listingID) throws ListingNotFoundException {
-        Listing listing = getListingById(listingID);
+
+        Listing listing = listingRepository.findById(listingID)
+                .orElseThrow(() -> new ListingNotFoundException("Listing with ID " + listingID + " not found"));
         listingRepository.delete(listing);
     }
 
@@ -42,7 +44,7 @@ public class ListingServiceImplementation implements ListingService {
     public void deleteListingsByMember(Long memberID) throws ListingNotFoundException, MemberNotFoundException {
         List<Listing> listings = listingRepository.findByMemberId(memberID);
         if (listings.isEmpty()) {
-            throw new MemberNotFoundException("No listings found for member");
+            throw new MemberNotFoundException("Listing with Member ID " + memberID + " not found");
         }
         listingRepository.deleteAll(listings);
     }

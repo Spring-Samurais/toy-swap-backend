@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
+import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.service.ListingServiceImplementation;
 
@@ -92,40 +93,52 @@ class ListingControllerTest {
 
     // Delete Testings
     @Test
+    @DisplayName("DELETE ")
     void testDeleteListing_Success() throws Exception {
         Long listingID = 1L;
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/{listingID}", listingID))
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
+        doNothing().when(mockListingService).deleteListingById(listingID);
 
-        verify(mockListingService).deleteListingById(listingID);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/{listingID}", listingID))
+                .andExpect(MockMvcResultMatchers.status().isAccepted());
+
+        verify(mockListingService, times(1)).deleteListingById(listingID);
     }
 
     @Test
     void testDeleteListing_NotFound() throws Exception {
         Long listingID = 1L;
-        doThrow(new ListingNotFoundException("Listing not found")).when(mockListingService).deleteListingById(listingID);
+        doThrow(new ListingNotFoundException("Listing with ID " + listingID + " not found and cant be deleted")).when(mockListingService).deleteListingById(listingID);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/{listingID}", listingID))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content().string("Listing with ID " + listingID + " not found and cant be deleted"));
+
+        verify(mockListingService, times(1)).deleteListingById(listingID);
     }
 
     @Test
     void testDeleteListingsByMember_Success() throws Exception {
         Long memberID = 1L;
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/member/{memberID}", memberID))
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
+        doNothing().when(mockListingService).deleteListingsByMember(memberID);
 
-        verify(mockListingService).deleteListingsByMember(memberID);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/member/{memberID}", memberID))
+                .andExpect(MockMvcResultMatchers.status().isAccepted());
+
+        verify(mockListingService, times(1)).deleteListingsByMember(memberID);
     }
 
     @Test
     void testDeleteListingsByMember_NotFound() throws Exception {
         Long memberID = 1L;
-        doThrow(new ListingNotFoundException("No listings found for member")).when(mockListingService).deleteListingsByMember(memberID);
+
+        doThrow(new MemberNotFoundException("Listing with ID " + memberID + " not found and cant be deleted")).when(mockListingService).deleteListingsByMember(memberID);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/member/{memberID}", memberID))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content().string("Listing with ID " + memberID + " not found and cant be deleted"));
+
+        verify(mockListingService, times(1)).deleteListingsByMember(memberID);
     }
 }

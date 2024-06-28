@@ -50,7 +50,7 @@ public class ListingController {
     public ResponseEntity<?> deleteItem(@PathVariable("listingID") Long listingID) {
         try {
             listingService.deleteListingById(listingID);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } catch (ListingNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -60,7 +60,7 @@ public class ListingController {
     public ResponseEntity<?> deleteItemsByMember(@PathVariable("memberID") Long memberID) {
         try {
             listingService.deleteListingsByMember(memberID);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } catch (ListingNotFoundException | MemberNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
