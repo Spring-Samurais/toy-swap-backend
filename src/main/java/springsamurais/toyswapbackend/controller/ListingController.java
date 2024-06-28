@@ -45,9 +45,18 @@ public class ListingController {
     public void updateItem(@RequestBody Listing listing) {
     }
 
-    @DeleteMapping
-    public void deleteItem(@RequestBody Listing listing) {
+
+    @DeleteMapping("/{listingID}")
+    public ResponseEntity<?> deleteItem(@PathVariable("listingID") Long listingID) {
+        try {
+            listingService.deleteListingById(listingID);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ListingNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
+
+
 }
 
 

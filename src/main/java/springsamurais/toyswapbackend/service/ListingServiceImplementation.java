@@ -31,4 +31,10 @@ public class ListingServiceImplementation implements ListingService {
                 .orElseThrow(() -> new ListingNotFoundException("Listing with ID " + id + " not found"));
     }
 
+    @Override
+    public void deleteListingById(Long listingID) throws ListingNotFoundException {
+        Listing listing = getListingById(listingID);
+        listingRepository.delete(listing);
+    }
+
 }

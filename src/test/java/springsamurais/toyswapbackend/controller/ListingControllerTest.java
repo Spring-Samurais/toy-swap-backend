@@ -90,5 +90,14 @@ class ListingControllerTest {
     }
 
 
+    // Delete Testings
+    @Test
+    void testDeleteListing_Success() throws Exception {
+        Long listingID = 1L;
 
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/{listingID}", listingID))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        verify(mockListingService).deleteListingById(listingID);
+    }
 }
