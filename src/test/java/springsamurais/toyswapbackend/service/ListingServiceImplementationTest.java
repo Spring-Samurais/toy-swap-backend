@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DataJpaTest
@@ -72,5 +73,21 @@ class ListingServiceImplementationTest {
 
         assertThrows(ListingNotFoundException.class, () -> serviceImplementation.getListingById(1L));
     }
+
+    @Test
+    @DisplayName("Test saveListing method when a valid listing is passed")
+    void testSaveListingWhenValidListingThenReturnListing() {
+        Listing listing = new Listing(6L, "New listing test", null, memberOne, null, Category.EDUCATIONAL_TOYS, "New description", ItemCondition.BRAND_NEW, Status.AVAILABLE, null);
+        when(listingRepository.save(any(Listing.class))).thenReturn(listing);
+
+        Listing result = serviceImplementation.saveListing(listing);
+
+        assertNotNull(result);
+        assertEquals("New listing test", result.getTitle());
+        assertEquals("New description", result.getDescription());
+        assertEquals(ItemCondition.BRAND_NEW, result.getCondition());
+    }
+
+
 
 }
