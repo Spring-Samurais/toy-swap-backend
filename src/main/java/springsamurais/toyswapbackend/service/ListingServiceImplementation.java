@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
+import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.repository.ListingRepository;
 
@@ -33,8 +34,36 @@ public class ListingServiceImplementation implements ListingService {
 
     @Override
     public Listing saveListing(Listing listing) {
-        return listingRepository.save(listing);
+
+        validateListing(listing);
+        try {
+            return listingRepository.save(listing);
+        } catch (Exception e) {
+            throw new ListingFailedToSaveException("Listing failed to save: " + e.getMessage());
+        }
     }
+
+    private void validateListing(Listing listing) {
+        if (listing.getTitle() == null || listing.getTitle().isEmpty()) {
+            throw new ListingFailedToSaveException("Title cannot be empty");
+        }
+        if (listing.getMember() == null) {
+            throw new ListingFailedToSaveException("Member cannot be empty");
+        }
+        if (listing.getCategory() == null) {
+            throw new ListingFailedToSaveException("Category cannot be empty");
+        }
+        if (listing.getDescription() == null || listing.getDescription().isEmpty()) {
+            throw new ListingFailedToSaveException("Description cannot be empty");
+        }
+        if (listing.getCondition() == null) {
+            throw new ListingFailedToSaveException("Condition cannot be empty");
+        }
+        if (listing.getStatusListing() == null) {
+            throw new ListingFailedToSaveException("Status cannot be empty");
+        }
+    }
+
 
 
 }
