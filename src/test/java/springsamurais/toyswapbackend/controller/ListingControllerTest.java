@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -87,6 +88,37 @@ class ListingControllerTest {
                 .andExpect(MockMvcResultMatchers.content().string("Listing with ID " + listingId + " not found"));
 
         verify(mockListingService, times(1)).getListingById(listingId);
+    }
+
+// Update Testings
+    @Test
+    void testUpdateListing_Success() throws Exception {
+//        listing = new Listing();
+//        listing.setId(1L);
+//        listing.setName("Toy");
+//        listing.setDescription("A fun toy");
+
+        Listing listing = new Listing(1L, "A Update listing test", null, memberOne, null, Category.ACTION_FIGURES, "I am a Updated description :-)", ItemCondition.GOOD, Status.AVAILABLE, null);
+        when(mockListingService.updateListing(listing)).thenReturn(listing);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/listings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(listing)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(listing.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(listing.getTitle()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(listing.getDescription()));
+    }
+
+    @Test
+    void testUpdateListing_NotFound() throws Exception {
+Listing listing = new Listing(1L, "A Update listing test", null, memberOne, null, Category.ACTION_FIGURES, "I am a Updated description :-)", ItemCondition.GOOD, Status.AVAILABLE, null);
+        doThrow(new ListingNotFoundException("Listing not found")).when(mockListingService).updateListing(listing);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/listings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(listing)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
 

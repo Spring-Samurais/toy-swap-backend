@@ -42,7 +42,13 @@ public class ListingController {
     }
 
     @PutMapping
-    public void updateItem(@RequestBody Listing listing) {
+    public ResponseEntity<?> updateItem(@RequestBody Listing listing) {
+        try {
+            Listing updatedListing = listingService.updateListing(listing);
+            return new ResponseEntity<>(updatedListing, HttpStatus.OK);
+        } catch (ListingNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping

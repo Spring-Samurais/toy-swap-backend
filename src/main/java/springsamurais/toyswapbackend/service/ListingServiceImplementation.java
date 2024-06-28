@@ -31,4 +31,12 @@ public class ListingServiceImplementation implements ListingService {
                 .orElseThrow(() -> new ListingNotFoundException("Listing with ID " + id + " not found"));
     }
 
+    @Override
+    public Listing updateListing(Listing listing) throws ListingNotFoundException {
+        if (!listingRepository.existsById(listing.getId())) {
+            throw new ListingNotFoundException("Listing not found");
+        }
+        return listingRepository.save(listing);
+    }
+
 }
