@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springsamurais.toyswapbackend.exception.*;
 import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.model.Listing;
@@ -52,8 +53,25 @@ public class ListingController {
     public void updateItem(@RequestBody Listing listing) {
     }
 
-    @DeleteMapping
-    public void deleteItem(@RequestBody Listing listing) {
+
+    @DeleteMapping("/{listingID}")
+    public ResponseEntity<?> deleteItem(@PathVariable("listingID") Long listingID) {
+        try {
+            listingService.deleteListingById(listingID);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (ListingNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/member/{memberID}")
+    public ResponseEntity<?> deleteItemsByMember(@PathVariable("memberID") Long memberID) {
+        try {
+            listingService.deleteListingsByMember(memberID);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (ListingNotFoundException | MemberNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 }
 

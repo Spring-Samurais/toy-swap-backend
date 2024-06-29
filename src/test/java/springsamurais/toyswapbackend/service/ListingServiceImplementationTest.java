@@ -1,22 +1,20 @@
 package springsamurais.toyswapbackend.service;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.*;
+import org.mockito.*;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.expression.spel.ast.NullLiteral;
-import springsamurais.toyswapbackend.exception.ListingNotFoundException;
+import springsamurais.toyswapbackend.exception.*;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.repository.ListingRepository;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -90,4 +88,49 @@ class ListingServiceImplementationTest {
 
 
 
+    @Test
+    void testDeleteListingById_Success() {
+        when(listingRepository.findById(listings.getFirst().getId())).thenReturn(Optional.of(listings.getFirst()));
+
+        serviceImplementation.deleteListingById(listings.getFirst().getId());
+
+        verify(listingRepository, times(1)).findById(listings.get(0).getId());
+        verify(listingRepository, times(1)).delete(listings.getFirst());
+    }
+
+    @Test
+    @DisplayName("Delete but given ID can't be found")
+    void testDeleteListingById_NotFound() {
+        when(listingRepository.findById(listings.getFirst().getId())).thenReturn(Optional.empty());
+
+        assertThrows(ListingNotFoundException.class, () -> {
+            serviceImplementation.deleteListingById(listings.getFirst().getId());
+        });
+
+        verify(listingRepository, times(1)).findById(listings.getFirst().getId());
+        verify(listingRepository, times(0)).delete(any(Listing.class));
+    }
+
+    @Test
+    void testDeleteListingsByMember_Success() throws ListingNotFoundException, MemberNotFoundException {
+        Long memberId = memberOne.getId();
+
+        when(listingRepository.findByMemberId(memberId)).thenReturn(listings);
+
+        serviceImplementation.deleteListingsByMember(memberId);
+
+        verify(listingRepository, times(1)).findByMemberId(memberId);
+        verify(listingRepository, times(1)).deleteAll(listings);
+    }
+
+    @Test
+    void testDeleteListingsByMember_MemberNotFound() {
+        Long memberId = 6L;
+        when(listingRepository.findByMemberId(memberId)).thenReturn(Collections.emptyList());
+
+        assertThrows(MemberNotFoundException.class, () -> { serviceImplementation.deleteListingsByMember(memberId);});
+
+        verify(listingRepository, times(1)).findByMemberId(memberId);
+        verify(listingRepository, times(0)).deleteAll(anyList());
+    }
 }
