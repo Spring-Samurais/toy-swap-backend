@@ -71,30 +71,32 @@ class ListingServiceImplementationTest {
     }
 
     @Test
-    void testDeleteListingById_Success() throws ListingNotFoundException {
-        when(listingRepository.findById(listings.get(0).getId())).thenReturn(Optional.of(listings.get(0)));
+    void testDeleteListingById_Success() {
+        when(listingRepository.findById(listings.getFirst().getId())).thenReturn(Optional.of(listings.getFirst()));
 
-        serviceImplementation.deleteListingById(listings.get(0).getId());
+        serviceImplementation.deleteListingById(listings.getFirst().getId());
 
         verify(listingRepository, times(1)).findById(listings.get(0).getId());
-        verify(listingRepository, times(1)).delete(listings.get(0));
+        verify(listingRepository, times(1)).delete(listings.getFirst());
     }
 
     @Test
+    @DisplayName("Delete but given ID can't be found")
     void testDeleteListingById_NotFound() {
-        when(listingRepository.findById(listings.get(0).getId())).thenReturn(Optional.empty());
+        when(listingRepository.findById(listings.getFirst().getId())).thenReturn(Optional.empty());
 
         assertThrows(ListingNotFoundException.class, () -> {
-            serviceImplementation.deleteListingById(listings.get(0).getId());
+            serviceImplementation.deleteListingById(listings.getFirst().getId());
         });
 
-        verify(listingRepository, times(1)).findById(listings.get(0).getId());
+        verify(listingRepository, times(1)).findById(listings.getFirst().getId());
         verify(listingRepository, times(0)).delete(any(Listing.class));
     }
 
     @Test
     void testDeleteListingsByMember_Success() throws ListingNotFoundException, MemberNotFoundException {
         Long memberId = memberOne.getId();
+
         when(listingRepository.findByMemberId(memberId)).thenReturn(listings);
 
         serviceImplementation.deleteListingsByMember(memberId);
@@ -105,12 +107,10 @@ class ListingServiceImplementationTest {
 
     @Test
     void testDeleteListingsByMember_MemberNotFound() {
-        Long memberId = memberOne.getId();
+        Long memberId = 6L;
         when(listingRepository.findByMemberId(memberId)).thenReturn(Collections.emptyList());
 
-        assertThrows(MemberNotFoundException.class, () -> {
-            serviceImplementation.deleteListingsByMember(memberId);
-        });
+        assertThrows(MemberNotFoundException.class, () -> { serviceImplementation.deleteListingsByMember(memberId);});
 
         verify(listingRepository, times(1)).findByMemberId(memberId);
         verify(listingRepository, times(0)).deleteAll(anyList());
