@@ -11,6 +11,8 @@ public interface ListingRepository extends CrudRepository<Listing, Long> {
 
     List<Listing> findByMemberId(Long memberId);
 
+
+
 }
 
 
