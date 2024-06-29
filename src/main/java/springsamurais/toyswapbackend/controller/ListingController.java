@@ -1,15 +1,19 @@
 package springsamurais.toyswapbackend.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springsamurais.toyswapbackend.exception.*;
 import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
-import springsamurais.toyswapbackend.model.Listing;
+import springsamurais.toyswapbackend.model.*;
+import springsamurais.toyswapbackend.repository.MemberRepository;
 import springsamurais.toyswapbackend.service.ListingServiceImplementation;
-
+import java.io.IOException;
 import java.util.List;
 
 
@@ -19,17 +23,19 @@ public class ListingController {
 
     @Autowired
     private ListingServiceImplementation listingService;
+    @Autowired
+    private MemberRepository memberRepository;
 
     @GetMapping("")
     public ResponseEntity<List<Listing>> getAllItems() {
-        List<Listing> listingList =listingService.getAllListings();
-            return new ResponseEntity<>(listingList, HttpStatus.OK);
+        List<Listing> listingList = listingService.getAllListings();
+        return new ResponseEntity<>(listingList, HttpStatus.OK);
     }
 
     @GetMapping("/{listingID}")
     public ResponseEntity<?> getListingById(@PathVariable("listingID") Long listingID) {
         Listing listingFound;
-        try{
+        try {
             listingFound = listingService.getListingById(listingID);
         } catch (ListingNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -37,16 +43,47 @@ public class ListingController {
         return new ResponseEntity<>(listingFound, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<?> saveListing(@RequestBody Listing listing) {
+    @GetMapping("/{imageID}/image")
+    public ResponseEntity<byte[]>  getImageById(@PathVariable("imageID") Long imageID) {
+        Listing listing = listingService.getListingById(imageID);
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(listing.getPhoto());
+    }
 
-        try {
-            Listing savedListing = listingService.saveListing(listing);
-            return new ResponseEntity<>("Listing added with ID: " + savedListing.getId(), HttpStatus.CREATED);
+    @PostMapping
+    public ResponseEntity<?> saveListing(
+            @RequestParam("title") String title ,
+            @RequestParam("userID") Long memberId,
+            @RequestParam("category") String category,
+            @RequestParam("description")  String description,
+            @RequestParam("condition") String condition,
+            @RequestParam("statusListing") String listingStatus,
+            @RequestPart("image") MultipartFile image) {
+
+        Category categoryFound = Category.valueOf(category);
+        ItemCondition conditionFound = ItemCondition.valueOf(condition);
+        Status statusFound = Status.valueOf(listingStatus);
+        Member member = new Member(3L,"Test input member","miembro","location",null);
+        memberRepository.save(member);
+
+        try{
+
+
+            Listing listingToSave = new Listing();
+            listingToSave.setTitle(title);
+            listingToSave.setMember(member);
+            listingToSave.setCategory(categoryFound);
+            listingToSave.setDescription(description);
+            listingToSave.setCondition(conditionFound);
+            listingToSave.setStatusListing(statusFound);
+            listingToSave.setPhoto(image.getBytes());
+            listingService.saveListing(listingToSave);
+
+            return new ResponseEntity<>(listingToSave, HttpStatus.CREATED);
+
+        } catch (ListingFailedToSaveException | IOException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        catch(ListingFailedToSaveException e){
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        }
+
     }
 
     @PutMapping
