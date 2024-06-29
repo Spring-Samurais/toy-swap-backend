@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
+import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.repository.ListingRepository;
 
@@ -30,5 +31,24 @@ public class ListingServiceImplementation implements ListingService {
         return listingRepository.findById(id)
                 .orElseThrow(() -> new ListingNotFoundException("Listing with ID " + id + " not found"));
     }
+
+    @Override
+    public void deleteListingById(Long listingID) throws ListingNotFoundException {
+
+        Listing listing = listingRepository.findById(listingID)
+                .orElseThrow(() -> new ListingNotFoundException("Listing with ID " + listingID + " not found"));
+        listingRepository.delete(listing);
+    }
+
+    @Override
+    public void deleteListingsByMember(Long memberID) throws ListingNotFoundException, MemberNotFoundException {
+        List<Listing> listings = listingRepository.findByMemberId(memberID);
+        if (listings.isEmpty()) {
+            throw new MemberNotFoundException("Listing with Member ID " + memberID + " not found");
+        }
+        listingRepository.deleteAll(listings);
+    }
+
+
 
 }
