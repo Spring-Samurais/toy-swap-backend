@@ -33,7 +33,7 @@ public class ListingServiceImplementation implements ListingService {
     }
 
     @Override
-    public Listing saveListing(Listing listing) {
+    public Listing saveListing(Listing listing) throws ListingFailedToSaveException {
 
         validateListing(listing);
         try {
@@ -43,7 +43,7 @@ public class ListingServiceImplementation implements ListingService {
         }
     }
 
-    private void validateListing(Listing listing) {
+    private void validateListing(Listing listing) throws ListingFailedToSaveException {
         if (listing.getTitle() == null || listing.getTitle().isEmpty()) {
             throw new ListingFailedToSaveException("Title cannot be empty");
         }
