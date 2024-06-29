@@ -44,7 +44,7 @@ public class ListingController {
             return new ResponseEntity<>("Listing added with ID: " + savedListing.getId(), HttpStatus.CREATED);
         }
         catch(ListingFailedToSaveException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }
     }
 
