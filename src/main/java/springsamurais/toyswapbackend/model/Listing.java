@@ -24,7 +24,7 @@ public class Listing {
     private String title;
 
     @Lob
-    private Blob photo;
+    private byte[] photo;
 
     @ManyToOne(fetch = FetchType.EAGER)
     //@JoinColumn(name = "", nullable = false)
