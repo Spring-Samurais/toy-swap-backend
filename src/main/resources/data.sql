@@ -33,3 +33,19 @@ VALUES ('Vintage Train Set', NULL, (SELECT id FROM member WHERE nickname = 'user
 
 INSERT INTO listing (title, photo, member_id, date_posted, category, description, condition, status_listing)
 VALUES ('Electronic Learning Tablet', NULL, (SELECT id FROM member WHERE nickname = 'userTwo'), '2024-08-10', 'ELECTRONIC_TOYS', 'An electronic learning tablet for kids.', 'BRAND_NEW', 'AVAILABLE');
+
+UPDATE listing
+SET photo = FILE_READ('src/main/resources/images/action_figure.jpg')
+WHERE id = 1;
+
+UPDATE listing
+SET photo = FILE_READ('src/main/resources/images/classic_car_toy.jpeg')
+WHERE id = 2;
+
+UPDATE listing
+SET photo = FILE_READ('src/main/resources/images/educational_board_game.jpeg')
+WHERE id = 3;
+
+UPDATE listing
+SET photo = FILE_READ('src/main/resources/images/Electronic_Stuffed_Animal_Collection.jpg')
+WHERE id = 4;
