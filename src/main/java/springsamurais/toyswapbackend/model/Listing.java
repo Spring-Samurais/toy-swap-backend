@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
-import java.sql.Blob;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -30,7 +29,7 @@ public class Listing {
     //@JoinColumn(name = "", nullable = false)
     private Member member;
 
-    private Date datePosted;
+    private LocalDateTime datePosted;
 
     @Enumerated(EnumType.STRING)
     private Category category;
