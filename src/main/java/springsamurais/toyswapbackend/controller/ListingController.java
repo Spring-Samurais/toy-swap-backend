@@ -11,7 +11,6 @@ import springsamurais.toyswapbackend.exception.*;
 import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.model.*;
-import springsamurais.toyswapbackend.repository.MemberRepository;
 import springsamurais.toyswapbackend.service.listing.ListingServiceImplementation;
 import java.util.List;
 
@@ -22,8 +21,8 @@ public class ListingController {
 
     @Autowired
     private ListingServiceImplementation listingService;
-    @Autowired
-    private MemberRepository memberRepository;
+
+
 
     @GetMapping("")
     public ResponseEntity<List<Listing>> getAllItems() {
@@ -41,7 +40,7 @@ public class ListingController {
         }
         return new ResponseEntity<>(listingFound, HttpStatus.OK);
     }
-
+    //Might delete later
     @GetMapping("/{imageID}/image")
     public ResponseEntity<byte[]>  getImageById(@PathVariable("imageID") Long imageID) {
         Listing listing = listingService.getListingById(imageID);
