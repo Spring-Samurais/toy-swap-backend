@@ -1,24 +1,30 @@
-package springsamurais.toyswapbackend.service;
+package springsamurais.toyswapbackend.service.listing;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.repository.ListingRepository;
+import springsamurais.toyswapbackend.service.member.MemberService;
+import springsamurais.toyswapbackend.service.member.MemberServiceImplementation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Service
-@Transactional // This annotation here point at this class for any transaction with the DB, please refer to Docs for more info :)  -Angel
+@Transactional// This annotation here point at this class for any transaction with the DB, please refer to Docs for more info :)  -Angel
 public class ListingServiceImplementation implements ListingService {
 
     @Autowired
     ListingRepository listingRepository;
+    @Autowired
+    MemberServiceImplementation memberService;
 
     @Override
     public List<Listing> getAllListings() {
@@ -29,19 +35,19 @@ public class ListingServiceImplementation implements ListingService {
 
     @Override
     public Listing getListingById(Long id) {
-        return listingRepository.findById(id)
-                .orElseThrow(() -> new ListingNotFoundException("Listing with ID " + id + " not found"));
+        return listingRepository.findById(id).orElseThrow(() -> new ListingNotFoundException("Listing with ID " + id + " not found"));
     }
 
     @Override
-    public Listing saveListing(Listing listing) throws ListingFailedToSaveException {
-
-        validateListing(listing);
+    public Listing saveListing(ListingDTO listingInput, MultipartFile imageInput) throws ListingFailedToSaveException {
+        Listing listing;
         try {
-            return listingRepository.save(listing);
-        } catch (Exception e) {
-            throw new ListingFailedToSaveException("Listing failed to save: " + e.getMessage());
+            listing = listingInput.toEntity(memberService.getMemberByID(listingInput.getMemberId()), imageInput);
+        } catch (MemberNotFoundException | IOException e) {
+            throw new ListingFailedToSaveException("Failed to save the list, reason: " + e.getMessage());
         }
+
+        return listingRepository.save(listing);
     }
 
     private void validateListing(Listing listing) throws ListingFailedToSaveException {
@@ -66,12 +72,10 @@ public class ListingServiceImplementation implements ListingService {
     }
 
 
-
     @Override
     public void deleteListingById(Long listingID) throws ListingNotFoundException {
 
-        Listing listing = listingRepository.findById(listingID)
-                .orElseThrow(() -> new ListingNotFoundException("Listing with ID " + listingID + " not found"));
+        Listing listing = listingRepository.findById(listingID).orElseThrow(() -> new ListingNotFoundException("Listing with ID " + listingID + " not found"));
         listingRepository.delete(listing);
     }
 
@@ -83,7 +87,6 @@ public class ListingServiceImplementation implements ListingService {
         }
         listingRepository.deleteAll(listings);
     }
-
 
 
 }
