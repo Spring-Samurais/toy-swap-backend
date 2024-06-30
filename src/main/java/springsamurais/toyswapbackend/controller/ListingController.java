@@ -13,7 +13,6 @@ import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.repository.MemberRepository;
 import springsamurais.toyswapbackend.service.listing.ListingServiceImplementation;
-import java.io.IOException;
 import java.util.List;
 
 
@@ -66,9 +65,12 @@ public class ListingController {
         dto.setDescription(description);
         dto.setCondition(condition);
         dto.setStatusListing(listingStatus);
-        listingService.saveListing(dto,image);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(listingService.saveListing(dto,image),HttpStatus.CREATED);
+        } catch (ListingFailedToSaveException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping
