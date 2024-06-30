@@ -12,7 +12,7 @@ import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.repository.MemberRepository;
-import springsamurais.toyswapbackend.service.ListingServiceImplementation;
+import springsamurais.toyswapbackend.service.listing.ListingServiceImplementation;
 import java.io.IOException;
 import java.util.List;
 
@@ -59,31 +59,16 @@ public class ListingController {
             @RequestParam("statusListing") String listingStatus,
             @RequestPart("image") MultipartFile image) {
 
-        Category categoryFound = Category.valueOf(category);
-        ItemCondition conditionFound = ItemCondition.valueOf(condition);
-        Status statusFound = Status.valueOf(listingStatus);
-        Member member = new Member(3L,"Test input member","miembro","location",null);
-        memberRepository.save(member);
+        ListingDTO dto = new ListingDTO();
+        dto.setTitle(title);
+        dto.setMemberId(memberId);
+        dto.setCategory(category);
+        dto.setDescription(description);
+        dto.setCondition(condition);
+        dto.setStatusListing(listingStatus);
+        listingService.saveListing(dto,image);
 
-        try{
-
-
-            Listing listingToSave = new Listing();
-            listingToSave.setTitle(title);
-            listingToSave.setMember(member);
-            listingToSave.setCategory(categoryFound);
-            listingToSave.setDescription(description);
-            listingToSave.setCondition(conditionFound);
-            listingToSave.setStatusListing(statusFound);
-            listingToSave.setPhoto(image.getBytes());
-            listingService.saveListing(listingToSave);
-
-            return new ResponseEntity<>(listingToSave, HttpStatus.CREATED);
-
-        } catch (ListingFailedToSaveException | IOException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping
