@@ -1,13 +1,18 @@
-package springsamurais.toyswapbackend.service;
+package springsamurais.toyswapbackend.service.listing;
 
 import org.junit.jupiter.api.*;
 import org.mockito.*;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.expression.spel.ast.NullLiteral;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import springsamurais.toyswapbackend.exception.*;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.repository.ListingRepository;
+import springsamurais.toyswapbackend.repository.MemberRepository;
+import springsamurais.toyswapbackend.service.member.MemberServiceImplementation;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,15 +28,23 @@ class ListingServiceImplementationTest {
 
     @Mock
     private ListingRepository listingRepository;
+    @Mock
+    private MemberRepository memberRepository;
+    @Mock
+    private MemberServiceImplementation memberServiceImplementation;
 
     @InjectMocks
     private ListingServiceImplementation serviceImplementation;
 
+
+
     private Member memberOne;
     private List<Listing> listings;
 
+
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         memberOne = new Member(1L, "Test Member", "member", "location", null);
 
         Listing listing = new Listing(1L, "A listing test", null, memberOne, null, Category.ACTION_FIGURES, "I am a description :-)", ItemCondition.GOOD, Status.AVAILABLE, null);
@@ -74,16 +87,37 @@ class ListingServiceImplementationTest {
 
     @Test
     @DisplayName("Test saveListing method when a valid listing is passed")
-    void testSaveListingWhenValidListingThenReturnListing() {
-        Listing listing = new Listing(6L, "New listing test", null, memberOne, null, Category.EDUCATIONAL_TOYS, "New description", ItemCondition.BRAND_NEW, Status.AVAILABLE, null);
-        when(listingRepository.save(any(Listing.class))).thenReturn(listing);
+    void testSaveListingWhenValidListingThenReturnListing() throws MemberNotFoundException, IOException {
+        ListingDTO listingDTO = new ListingDTO();
+        listingDTO.setTitle("New listing test");
+        listingDTO.setMemberId(1L);
+        listingDTO.setCategory("CONSTRUCTION_TOYS");
+        listingDTO.setDescription("New description");
+        listingDTO.setCondition("USED");
+        listingDTO.setStatusListing("AVAILABLE");
 
-        Listing result = serviceImplementation.saveListing(listing);
+        // Mocking a MultipartFile
+        MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image content".getBytes());
 
+        Member member = new Member(1L, "Test Member", "member", "location", null);
+        Listing expectedListing = new Listing(6L, "New listing test", image.getBytes(), member, LocalDateTime.now(), Category.CONSTRUCTION_TOYS, "New description", ItemCondition.USED, Status.AVAILABLE, null);
+
+        // Correctly wrap the return value in an Optional
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
+        when(listingRepository.save(any(Listing.class))).thenReturn(expectedListing);
+
+        // Act
+        Listing result = serviceImplementation.saveListing(listingDTO, image);
+
+        // Assert
         assertNotNull(result);
         assertEquals("New listing test", result.getTitle());
         assertEquals("New description", result.getDescription());
-        assertEquals(ItemCondition.BRAND_NEW, result.getCondition());
+        assertEquals(ItemCondition.USED, result.getCondition());
+        assertEquals(Status.AVAILABLE, result.getStatusListing());
+        assertEquals(member, result.getMember());
+        assertArrayEquals(image.getBytes(), result.getPhoto());
+
     }
 
 
