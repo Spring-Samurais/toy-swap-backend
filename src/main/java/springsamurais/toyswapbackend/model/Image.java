@@ -21,7 +21,7 @@ public class Image {
     @Column(nullable = false)
     private String imageName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     //@JoinColumn(name = "", nullable = false)
     private Listing listing;
 
