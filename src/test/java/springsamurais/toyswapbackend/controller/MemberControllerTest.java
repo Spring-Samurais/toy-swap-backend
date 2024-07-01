@@ -18,13 +18,7 @@ import springsamurais.toyswapbackend.service.member.MemberService;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static java.nio.file.Paths.get;
 import static org.mockito.Mockito.*;
-import static org.springframework.http.RequestEntity.post;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class MemberControllerTest {
 
@@ -68,8 +62,8 @@ class MemberControllerTest {
         when(memberService.getMemberByID(anyLong())).thenReturn(memberOne);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/members/{memberId}", 1L))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Andrew"));
+                .andExpectAll(MockMvcResultMatchers.status().isOk())
+                .andExpectAll(MockMvcResultMatchers.jsonPath("$.name").value("Andrew"));
 
         verify(memberService, times(1)).getMemberByID(1L);
     }
@@ -79,8 +73,8 @@ class MemberControllerTest {
         when(memberService.getMemberByID(anyLong())).thenThrow(new MemberNotFoundException("Member with ID 1 not found"));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/members/{memberId}", 1L))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.content().string("Member with ID 1 not found"));
+                .andExpectAll(MockMvcResultMatchers.status().isNotFound())
+                .andExpectAll(MockMvcResultMatchers.content().string("Member with ID 1 not found"));
 
         verify(memberService, times(1)).getMemberByID(1L);
     }
@@ -92,17 +86,52 @@ class MemberControllerTest {
 
     @Test
     void testUpdateMember_Success() throws Exception {
+//        memberOne = new Member(1L, "Jackson", "Jack", "London", null);
+//        membersList.add(memberOne);
         when(memberService.updateMember(anyLong(), any(Member.class))).thenReturn(memberOne);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/members/{memberId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(memberOne)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Andrew"));
+                .andExpectAll(MockMvcResultMatchers.status().isOk())
+                .andExpectAll(MockMvcResultMatchers.jsonPath("$.name").value("Andrew"));
 
         verify(memberService, times(1)).updateMember(eq(1L), any(Member.class));
     }
 
+    @Test
+    void testUpdateMember_NotFound() throws Exception {
+        when(memberService.updateMember(anyLong(), any(Member.class))).thenThrow(new MemberNotFoundException("Member not found"));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/members/{memberId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(memberOne)))
+                .andExpectAll(MockMvcResultMatchers.status().isNotFound())
+                .andExpectAll(MockMvcResultMatchers.content().string("Member not found"));
+
+        verify(memberService, times(1)).updateMember(eq(1L), any(Member.class));
+    }
+
+    @Test
+    void testDeleteMemberById_Success() throws Exception {
+        doNothing().when(memberService).deleteMemberByID(anyLong());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/members/{memberId}", 1L))
+                .andExpectAll(MockMvcResultMatchers.status().isAccepted());
+
+        verify(memberService, times(1)).deleteMemberByID(1L);
+    }
+
+    @Test
+    void testDeleteMemberById_NotFound() throws Exception {
+        doThrow(new MemberNotFoundException("Member not found")).when(memberService).deleteMemberByID(anyLong());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/members/{memberId}", 1L))
+                .andExpectAll(MockMvcResultMatchers.status().isNotFound())
+                .andExpectAll(MockMvcResultMatchers.content().string("Member not found"));
+
+        verify(memberService, times(1)).deleteMemberByID(1L);
+    }
 
 
 

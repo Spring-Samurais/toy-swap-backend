@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springsamurais.toyswapbackend.exception.MemberNotFoundException;
+import springsamurais.toyswapbackend.exception.*;
 import springsamurais.toyswapbackend.model.Member;
 import springsamurais.toyswapbackend.service.member.MemberService;
 
@@ -51,7 +51,7 @@ public class MemberController {
     @DeleteMapping("/{memberID}")
     public ResponseEntity<?> deleteMemberById(@PathVariable("memberID") Long memberID) {
         try {
-            memberService.deletememberbyid(memberID);
+            memberService.deleteMemberByID(memberID);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } catch (MemberNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

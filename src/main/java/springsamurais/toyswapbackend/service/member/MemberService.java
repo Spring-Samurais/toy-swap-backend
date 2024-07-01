@@ -13,5 +13,5 @@ public interface MemberService {
     List<Member> getAllMembers();
     Member addMember(Member member);
     Member updateMember(Long memberID, Member member) throws MemberNotFoundException;
-    void deletememberbyid(Long memberID) throws MemberNotFoundException;
+    void deleteMemberByID(Long memberID) throws MemberNotFoundException;
 }

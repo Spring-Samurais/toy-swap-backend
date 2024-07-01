@@ -45,18 +45,18 @@ public class MemberServiceImplementation implements MemberService {
     }
 
     @Override
-    public void deletememberbyid(Long memberID) throws MemberNotFoundException {
-        Optional<Member> members = memberRepository.findById(memberID);
-        if (members.isEmpty()) {
-            throw new MemberNotFoundException("Member with ID " + memberID + " not found");
-        }
-        memberRepository.deleteById(memberID);
-    }
-//        if (!memberRepository.existsById(memberID)) {
+    public void deleteMemberByID(Long memberID) throws MemberNotFoundException {
+//        Optional<Member> members = memberRepository.findById(memberID);
+//        if (members.isEmpty()) {
 //            throw new MemberNotFoundException("Member with ID " + memberID + " not found");
 //        }
 //        memberRepository.deleteById(memberID);
 //    }
+        if (!memberRepository.existsById(memberID)) {
+            throw new MemberNotFoundException("Member with ID " + memberID + " not found");
+        }
+        memberRepository.deleteById(memberID);
+    }
 
     /*List<Listing> listings = listingRepository.findByMemberId(memberID);
         if (listings.isEmpty()) {
