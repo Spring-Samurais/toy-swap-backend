@@ -10,18 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.multipart.MultipartFile;
+import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
+import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.*;
-import springsamurais.toyswapbackend.service.ListingServiceImplementation;
+import springsamurais.toyswapbackend.service.listing.ListingServiceImplementation;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @AutoConfigureMockMvc
@@ -90,7 +93,88 @@ class ListingControllerTest {
         verify(mockListingService, times(1)).getListingById(listingId);
     }
 
-// Update Testings
+    @Test
+    @DisplayName("POST -> Save Listing")
+    void saveListingTest() throws Exception {
+        ListingDTO newListingDTO = new ListingDTO();
+        newListingDTO.setTitle("New listing test");
+        newListingDTO.setMemberId(1L);
+        newListingDTO.setCategory("CONSTRUCTION_TOYS");
+        newListingDTO.setDescription("New description");
+        newListingDTO.setCondition("USED");
+        newListingDTO.setStatusListing("AVAILABLE");
+
+        MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image content".getBytes());
+
+        when(mockListingService.saveListing(any(ListingDTO.class), any(MultipartFile.class)))
+                .thenThrow(new ListingFailedToSaveException("Failed to save listing"));
+
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/listings")
+                        .file(image)
+                        .param("title", newListingDTO.getTitle())
+                        .param("userID", String.valueOf(newListingDTO.getMemberId()))
+                        .param("category", newListingDTO.getCategory())
+                        .param("description", newListingDTO.getDescription())
+                        .param("condition", newListingDTO.getCondition())
+                        .param("statusListing", newListingDTO.getStatusListing()))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().string("Failed to save listing"));
+
+        verify(mockListingService, times(1)).saveListing(any(ListingDTO.class), any(MultipartFile.class));
+    }
+
+
+    // Delete Testings
+    @Test
+    @DisplayName("DELETE ")
+    void testDeleteListing_Success() throws Exception {
+        Long listingID = 1L;
+
+        doNothing().when(mockListingService).deleteListingById(listingID);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/{listingID}", listingID))
+                .andExpect(MockMvcResultMatchers.status().isAccepted());
+
+        verify(mockListingService, times(1)).deleteListingById(listingID);
+    }
+
+    @Test
+    void testDeleteListing_NotFound() throws Exception {
+        Long listingID = 1L;
+        doThrow(new ListingNotFoundException("Listing with ID " + listingID + " not found and cant be deleted")).when(mockListingService).deleteListingById(listingID);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/{listingID}", listingID))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content().string("Listing with ID " + listingID + " not found and cant be deleted"));
+
+        verify(mockListingService, times(1)).deleteListingById(listingID);
+    }
+
+    @Test
+    void testDeleteListingsByMember_Success() throws Exception {
+        Long memberID = 1L;
+
+        doNothing().when(mockListingService).deleteListingsByMember(memberID);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/member/{memberID}", memberID))
+                .andExpect(MockMvcResultMatchers.status().isAccepted());
+
+        verify(mockListingService, times(1)).deleteListingsByMember(memberID);
+    }
+
+    @Test
+    void testDeleteListingsByMember_NotFound() throws Exception {
+        Long memberID = 1L;
+
+        doThrow(new MemberNotFoundException("Listing with ID " + memberID + " not found and cant be deleted")).when(mockListingService).deleteListingsByMember(memberID);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/listings/member/{memberID}", memberID))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content().string("Listing with ID " + memberID + " not found and cant be deleted"));
+
+        verify(mockListingService, times(1)).deleteListingsByMember(memberID);
+    }
+    // Update Testings
     @Test
     void testUpdateListing_Success() throws Exception {
 
@@ -116,7 +200,4 @@ class ListingControllerTest {
                         .content(mapper.writeValueAsString(listing)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
-
-
-
 }
