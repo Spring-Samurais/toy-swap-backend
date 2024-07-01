@@ -1,5 +1,6 @@
 package springsamurais.toyswapbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,7 +34,8 @@ public class Member {
     private String location;
 
     @Column
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JsonManagedReference
     //@JoinColumn(name = "", nullable = false)
     private List<Listing> listings;
 
