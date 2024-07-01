@@ -32,14 +32,10 @@ public class ListingController {
 
     @GetMapping("/{listingID}")
     public ResponseEntity<?> getListingById(@PathVariable("listingID") Long listingID) {
-        Listing listingFound;
-        try {
-            listingFound = listingService.getListingById(listingID);
-        } catch (ListingNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+        Listing listingFound = listingService.getListingById(listingID);
         return new ResponseEntity<>(listingFound, HttpStatus.OK);
     }
+
     //Might delete later
     @GetMapping("/{imageID}/image")
     public ResponseEntity<byte[]>  getImageById(@PathVariable("imageID") Long imageID) {
@@ -65,11 +61,9 @@ public class ListingController {
         dto.setCondition(condition);
         dto.setStatusListing(listingStatus);
 
-        try {
-            return new ResponseEntity<>(listingService.saveListing(dto,image),HttpStatus.CREATED);
-        } catch (ListingFailedToSaveException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        Listing savedListing = listingService.saveListing(dto, image);
+        return new ResponseEntity<>(savedListing, HttpStatus.CREATED);
+
     }
 
     @PutMapping
@@ -79,16 +73,14 @@ public class ListingController {
 
     @DeleteMapping("/{listingID}")
     public ResponseEntity<?> deleteItem(@PathVariable("listingID") Long listingID) {
-        try {
-            listingService.deleteListingById(listingID);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (ListingNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+
+        listingService.deleteListingById(listingID);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/member/{memberID}")
     public ResponseEntity<?> deleteItemsByMember(@PathVariable("memberID") Long memberID) {
+
         try {
             listingService.deleteListingsByMember(memberID);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
