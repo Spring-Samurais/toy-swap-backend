@@ -1,5 +1,7 @@
 package springsamurais.toyswapbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +28,8 @@ public class Listing {
     private byte[] photo;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    //@JoinColumn(name = "", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false)
+    @JsonBackReference
     private Member member;
 
     private LocalDateTime datePosted;
@@ -43,7 +46,8 @@ public class Listing {
     @Enumerated(EnumType.STRING)
     private Status statusListing;
 
-    @OneToMany(mappedBy = "")
+    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<Comment> comments;
 
 }
