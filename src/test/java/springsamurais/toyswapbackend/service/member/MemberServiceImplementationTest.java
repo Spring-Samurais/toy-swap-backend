@@ -33,7 +33,7 @@ class MemberServiceImplementationTest {
 
         membersList = new ArrayList<>();
         membersList.add(member);
-        membersList.add(new Member(2L, "Nicolus", "Nick", "Cardiff", null));
+        membersList.add(new Member(2L, "Nicolas", "Nick", "Cardiff", null));
     }
 
     @Test
@@ -114,22 +114,22 @@ class MemberServiceImplementationTest {
     }
 
     @Test
-    void testDeleteMemberById_Success() throws MemberNotFoundException {
+    void testDeletememberbyid_Success() throws MemberNotFoundException {
         when(memberRepository.existsById(anyLong())).thenReturn(true);
         doNothing().when(memberRepository).deleteById(anyLong());
 
-        memberService.deleteMemberById(1L);
+        memberService.deletememberbyid(1L);
 
         verify(memberRepository, times(1)).existsById(1L);
         verify(memberRepository, times(1)).deleteById(1L);
     }
 
     @Test
-    void testDeleteMemberById_NotFound() {
+    void testDeletememberbyid_NotFound() {
         when(memberRepository.existsById(anyLong())).thenReturn(false);
 
         MemberNotFoundException exception = assertThrows(MemberNotFoundException.class, () -> {
-            memberService.deleteMemberById(1L);
+            memberService.deletememberbyid(1L);
         });
 
         assertEquals("Member with ID 1 not found", exception.getMessage());

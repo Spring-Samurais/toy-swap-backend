@@ -8,6 +8,7 @@ import springsamurais.toyswapbackend.repository.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -44,11 +45,23 @@ public class MemberServiceImplementation implements MemberService {
     }
 
     @Override
-    public void deleteMemberById(Long memberID) throws MemberNotFoundException {
-        if (!memberRepository.existsById(memberID)) {
+    public void deletememberbyid(Long memberID) throws MemberNotFoundException {
+        Optional<Member> members = memberRepository.findById(memberID);
+        if (members.isEmpty()) {
             throw new MemberNotFoundException("Member with ID " + memberID + " not found");
         }
         memberRepository.deleteById(memberID);
     }
+//        if (!memberRepository.existsById(memberID)) {
+//            throw new MemberNotFoundException("Member with ID " + memberID + " not found");
+//        }
+//        memberRepository.deleteById(memberID);
+//    }
+
+    /*List<Listing> listings = listingRepository.findByMemberId(memberID);
+        if (listings.isEmpty()) {
+            throw new MemberNotFoundException("Listing with Member ID " + memberID + " not found");
+        }
+        listingRepository.deleteAll(listings);*/
 }
 

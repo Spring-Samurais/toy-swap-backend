@@ -51,7 +51,7 @@ public class MemberController {
     @DeleteMapping("/{memberID}")
     public ResponseEntity<?> deleteMemberById(@PathVariable("memberID") Long memberID) {
         try {
-            memberService.deleteMemberById(memberID);
+            memberService.deletememberbyid(memberID);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } catch (MemberNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
