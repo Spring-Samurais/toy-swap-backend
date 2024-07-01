@@ -1,6 +1,7 @@
 package springsamurais.toyswapbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,6 +47,7 @@ public class Listing {
     private Status statusListing;
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<Comment> comments;
 
 }
