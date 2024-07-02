@@ -50,7 +50,7 @@ public class Listing {
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference // Avoid nasty recursion
+    @JsonManagedReference // Avoid nasty r
     @JsonIgnoreProperties({"id","imageName"})
     private List<Image> images;
 
