@@ -13,4 +13,5 @@
 *.iml
 *.ipr
 out/
- imgurAPI.properties
+imgurAPI.properties
+custom.properties
