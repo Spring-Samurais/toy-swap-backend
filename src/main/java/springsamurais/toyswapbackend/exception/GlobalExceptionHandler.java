@@ -107,7 +107,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ImageFailedToUpload.class)
     public ResponseEntity<ErrorResponse> handlerImageFailedToUpload(ImageFailedToUpload e, WebRequest request) {
         logger.error("ImageFailedToUpload: {}", e.getMessage());
-        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), HttpStatus.UNPROCESSABLE_ENTITY.value(), "Image Failed to Upload", e.getMessage(), request.getDescription(false));
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), HttpStatus.UNPROCESSABLE_ENTITY.value(), "Image Failed to Upload", e.getMessage() +" "+ e.getCause(), request.getDescription(false));
         return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
