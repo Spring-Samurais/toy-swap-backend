@@ -23,7 +23,7 @@ public class ListingDTO {
     private String description;
     private String condition;
     private String statusListing;
-    private List<MultipartFile> imageFiles; // Add this field to handle multiple images
+    private List<MultipartFile> imageFiles;
 
 
 
@@ -41,17 +41,20 @@ public class ListingDTO {
 
 
         List<Image> imagesList = new ArrayList<>();
-        //I can probably use a stream - Angel
+        int counter = 1;
+        //TODO Stream this iteration :D
         for (MultipartFile file : imageFiles) {
             String base64Image = Base64.getEncoder().encodeToString(file.getBytes());
-            String url = imgurService.uploadImage(base64Image);
+            String url = imgurService.uploadImage(base64Image, listing.getTitle() +" image: "+ counter);
             Image image = new Image();
             image.setImageName(file.getOriginalFilename());
             image.setUrl(url);
             image.setListing(listing);
             imagesList.add(image);
+            counter++;
         }
         listing.setImages(imagesList);
+
 
         return listing;
     }
