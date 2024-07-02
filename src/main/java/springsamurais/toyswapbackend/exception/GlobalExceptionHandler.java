@@ -97,6 +97,21 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles ImageFailedToUpload.
+     * This exception is thrown when there is a failure in uploading an image.
+     *
+     * @param e       the ImageFailedToUpload
+     * @param request the WebRequest
+     * @return a ResponseEntity containing an ErrorResponse with HTTP status 422 (Unprocessable Entity)
+     */
+    @ExceptionHandler(ImageFailedToUpload.class)
+    public ResponseEntity<ErrorResponse> handlerImageFailedToUpload(ImageFailedToUpload e, WebRequest request) {
+        logger.error("ImageFailedToUpload: {}", e.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), HttpStatus.UNPROCESSABLE_ENTITY.value(), "Image Failed to Upload", e.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    /**
      * Handles all other exceptions.
      * This method catches any exceptions that are not explicitly handled by other methods.
      *
@@ -107,9 +122,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAllExceptions(Exception e, WebRequest request) {
         logger.error("Exception: {}", e.getMessage());
-        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal Server Error", e.getMessage(), request.getDescription(false));
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), "Unexpected Internal Server Error", e.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 
     @AllArgsConstructor
     @Data
