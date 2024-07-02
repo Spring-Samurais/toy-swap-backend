@@ -96,20 +96,20 @@ class ListingServiceImplementationTest {
         listingDTO.setCondition("USED");
         listingDTO.setStatusListing("AVAILABLE");
 
-        // Mocking a MultipartFile
+
         MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image content".getBytes());
 
         Member member = new Member(1L, "Test Member", "member", "location", null);
         Listing expectedListing = new Listing(6L, "New listing test", image.getBytes(), member, LocalDateTime.now(), Category.CONSTRUCTION_TOYS, "New description", ItemCondition.USED, Status.AVAILABLE, null);
 
-        // Correctly wrap the return value in an Optional
+
         when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
         when(listingRepository.save(any(Listing.class))).thenReturn(expectedListing);
 
-        // Act
+
         Listing result = serviceImplementation.saveListing(listingDTO, image);
 
-        // Assert
+
         assertNotNull(result);
         assertEquals("New listing test", result.getTitle());
         assertEquals("New description", result.getDescription());
@@ -120,7 +120,34 @@ class ListingServiceImplementationTest {
 
     }
 
+    @Test
+    void updateListingTest() throws MemberNotFoundException, IOException {
+        Listing listingOne = listings.getFirst();
+        Listing listingUpdate = new Listing();
+        listingUpdate.setId(1L);
+        listingUpdate.setTitle("New listing test");
+        listingUpdate.setMember(memberOne);
+        listingUpdate.setCategory(Category.CONSTRUCTION_TOYS);
+        listingUpdate.setDescription("New description");
+        listingUpdate.setCondition(ItemCondition.GOOD);
+        listingUpdate.setStatusListing(Status.AVAILABLE);
 
+        Mockito.when(listingRepository.existsById(1L)).thenReturn(true);
+        Mockito.when(listingRepository.save(listingUpdate)).thenReturn(listingUpdate);
+
+        Listing updatedListing = serviceImplementation.updateListing(listingUpdate);
+        assertEquals("New listing test", updatedListing.getTitle());
+        assertEquals("New description", updatedListing.getDescription());
+
+    }
+    @Test
+    void updateNotFoundListingTest() throws MemberNotFoundException, IOException {
+        when(listingRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ListingNotFoundException.class, () -> serviceImplementation.updateListing(listings.getFirst()));
+
+        verify(listingRepository).existsById(1L);
+    }
 
     @Test
     void testDeleteListingById_Success() {
