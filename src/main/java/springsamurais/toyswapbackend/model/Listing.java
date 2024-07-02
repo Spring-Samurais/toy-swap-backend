@@ -29,7 +29,6 @@ public class Listing {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id", nullable = false)
-    @JsonBackReference
     private Member member;
 
     private LocalDateTime datePosted;
