@@ -20,10 +20,11 @@ public class ImgurService {
 
 
 
-    public String uploadImage(String imageBase64) {
+    public String uploadImage(String imageBase64, String imageTitle) throws ImageFailedToUpload {
         HttpResponse<JsonNode> response = Unirest.post("https://api.imgur.com/3/image")
                 .header("Authorization", "Client-ID " + clientId)
                 .field("image", imageBase64)
+                .field("title", imageTitle)
                 .asJson();
 
         if (response.getStatus() == 200) {
