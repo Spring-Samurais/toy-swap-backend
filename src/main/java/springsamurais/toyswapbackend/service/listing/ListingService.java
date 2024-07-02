@@ -12,7 +12,7 @@ public interface ListingService {
    List<Listing> getAllListings();
    Listing getListingById(Long id);
    Listing saveListing(ListingDTO listing, MultipartFile image) throws ListingNotFoundException;
-
+   Listing updateListing(Listing listing);
    void deleteListingById(Long listingID) throws ListingNotFoundException;
    void deleteListingsByMember(Long memberID) throws ListingNotFoundException, MemberNotFoundException;
 

@@ -5,9 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springsamurais.toyswapbackend.exception.*;
@@ -15,12 +12,10 @@ import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.service.listing.ListingServiceImplementation;
-import java.util.List;
-import springsamurais.toyswapbackend.exception.*;
-import springsamurais.toyswapbackend.model.Listing;
-import springsamurais.toyswapbackend.service.ListingServiceImplementation;
 
 import java.util.List;
+
+import springsamurais.toyswapbackend.model.Listing;
 
 
 @RestController
@@ -29,7 +24,6 @@ public class ListingController {
 
     @Autowired
     private ListingServiceImplementation listingService;
-
 
 
     @GetMapping("")
@@ -48,19 +42,20 @@ public class ListingController {
         }
         return new ResponseEntity<>(listingFound, HttpStatus.OK);
     }
+
     //Might delete later
     @GetMapping("/{imageID}/image")
-    public ResponseEntity<byte[]>  getImageById(@PathVariable("imageID") Long imageID) {
+    public ResponseEntity<byte[]> getImageById(@PathVariable("imageID") Long imageID) {
         Listing listing = listingService.getListingById(imageID);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(listing.getPhoto());
     }
 
     @PostMapping
     public ResponseEntity<?> saveListing(
-            @RequestParam("title") String title ,
+            @RequestParam("title") String title,
             @RequestParam("userID") Long memberId,
             @RequestParam("category") String category,
-            @RequestParam("description")  String description,
+            @RequestParam("description") String description,
             @RequestParam("condition") String condition,
             @RequestParam("statusListing") String listingStatus,
             @RequestPart("image") MultipartFile image) {
@@ -74,8 +69,8 @@ public class ListingController {
         dto.setStatusListing(listingStatus);
 
         try {
-            return new ResponseEntity<>(listingService.saveListing(dto,image),HttpStatus.CREATED);
-        } catch (ListingFailedToSaveException e){
+            return new ResponseEntity<>(listingService.saveListing(dto, image), HttpStatus.CREATED);
+        } catch (ListingFailedToSaveException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -87,7 +82,7 @@ public class ListingController {
             return new ResponseEntity<>(updatedListing, HttpStatus.OK);
         } catch (ListingNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }catch (InvalidListingException e) {
+        } catch (InvalidListingException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

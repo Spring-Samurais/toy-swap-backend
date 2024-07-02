@@ -49,6 +49,16 @@ public class ListingServiceImplementation implements ListingService {
 
         return listingRepository.save(listing);
     }
+    @Override
+    public Listing updateListing(Listing listing)  {
+        validateListing(listing);
+
+        if (!listingRepository.existsById(listing.getId())) {
+            throw new ListingNotFoundException("Listing with ID not found");
+        }
+        return listingRepository.save(listing);
+    }
+
 
     private void validateListing(Listing listing) throws ListingFailedToSaveException {
         if (listing.getTitle() == null || listing.getTitle().isEmpty()) {
