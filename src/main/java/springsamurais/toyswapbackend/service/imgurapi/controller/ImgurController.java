@@ -28,7 +28,7 @@ public class ImgurController {
                     .orElseThrow(() -> new RuntimeException("Listing not found"));
 
             String imageBase64 = Base64.getEncoder().encodeToString(file.getBytes());
-            String imageUrl = imgurService.uploadImage(imageBase64);
+            String imageUrl = imgurService.uploadImage(imageBase64, file.getOriginalFilename());
 
             listing.setDescription(listing.getDescription() + "\nImage URL: " + imageUrl); // Append the image URL to the description
 
