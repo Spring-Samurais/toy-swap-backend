@@ -30,7 +30,7 @@ public class ImgurController {
             String imageBase64 = Base64.getEncoder().encodeToString(file.getBytes());
             String imageUrl = imgurService.uploadImage(imageBase64, file.getOriginalFilename());
 
-            listing.setDescription(listing.getDescription() + "\nImage URL: " + imageUrl); // Append the image URL to the description
+            listing.setDescription(listing.getDescription() + "\nImage URL: " + imageUrl);
 
             Listing updatedListing = listingRepository.save(listing);
             return ResponseEntity.ok(updatedListing);
