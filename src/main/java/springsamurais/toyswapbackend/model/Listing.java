@@ -26,11 +26,6 @@ public class Listing {
     @NotNull
     private String title;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "member_id", nullable = false)
-    @JsonIgnoreProperties({"listings","name","location"})
-    private Member member;
-
     private LocalDateTime datePosted;
 
     @Enumerated(EnumType.STRING)
@@ -44,6 +39,11 @@ public class Listing {
 
     @Enumerated(EnumType.STRING)
     private Status statusListing;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "member_id", nullable = false)
+    @JsonIgnoreProperties({"listings","name","location"})
+    private Member member;
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
