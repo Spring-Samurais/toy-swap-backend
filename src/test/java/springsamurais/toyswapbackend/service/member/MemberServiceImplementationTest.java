@@ -4,7 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.cache.CacheManager;
 import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.Member;
 import springsamurais.toyswapbackend.repository.MemberRepository;
@@ -19,6 +21,8 @@ import static org.mockito.Mockito.*;
 class MemberServiceImplementationTest {
     @Mock
     private MemberRepository memberRepository;
+    @Mock
+    private CacheManager cacheManager; // Mocked cache manager to inspect cache behavior
 
     @InjectMocks
     private MemberServiceImplementation memberService;
@@ -136,5 +140,57 @@ class MemberServiceImplementationTest {
 
         verify(memberRepository, times(1)).existsById(1L);
         verify(memberRepository, times(0)).deleteById(anyLong());
+    }
+
+
+    // Caching Testings
+
+    @Test
+    public void testGetMemberByID_CacheHit() throws MemberNotFoundException {
+        // Mock data
+        Long memberID = 1L;
+        Member mockMember = new Member(memberID,"Andrew", "Andy", "London", null);
+
+        // Mock repository method to return a member
+        Mockito.when(memberRepository.findById(memberID)).thenReturn(Optional.of(mockMember));
+
+        // First invocation: Retrieve member (should hit repository)
+        Member retrievedMember1 = memberService.getMemberByID(memberID);
+
+        // Second invocation: Retrieve member again (should hit cache, not repository)
+        Member retrievedMember2 = memberService.getMemberByID(memberID);
+
+        // Verify repository method called only once
+        Mockito.verify(memberRepository, Mockito.times(1)).findById(memberID);
+
+        // Verify cached member is returned
+        assertEquals(memberID, retrievedMember1.getId());
+        assertEquals(memberID, retrievedMember2.getId());
+
+        // Verify cache interactions (example for Mockito verification)
+        Mockito.verify(cacheManager.getCache("members")).put(anyLong(), Mockito.any());
+    }
+
+    @Test
+    public void testGetMemberByID_CacheMiss() throws MemberNotFoundException {
+        // Mock data
+        Long memberID = 1L;
+
+        // Mock repository method to return empty optional (simulating member not found)
+        Mockito.when(memberRepository.findById(memberID)).thenReturn(Optional.empty());
+
+        // Call the service method and assert that MemberNotFoundException is thrown
+        MemberNotFoundException exception = org.junit.jupiter.api.Assertions.assertThrows(MemberNotFoundException.class, () -> {
+            memberService.getMemberByID(memberID);
+        });
+
+        // Verify repository method called only once
+        Mockito.verify(memberRepository, Mockito.times(1)).findById(memberID);
+
+        // Verify cache interactions (example for Mockito verification)
+        Mockito.verify(cacheManager.getCache("members")).get(anyLong());
+
+        // Verify exception message
+        assertEquals("Member with ID " + memberID + " not found", exception.getMessage());
     }
 }
