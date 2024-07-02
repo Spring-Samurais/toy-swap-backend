@@ -101,7 +101,7 @@ class ListingServiceImplementationTest {
         Listing expectedListing = new Listing(6L, "New listing test", LocalDateTime.now(), Category.CONSTRUCTION_TOYS, "New description", ItemCondition.USED, Status.AVAILABLE, member, null, null);
 
         when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
-        when(imgurService.uploadImage(anyString())).thenReturn("http://imgur.com/image.jpg");
+        when(imgurService.uploadImage(anyString(),anyString())).thenReturn("http://imgur.com/image.jpg");
         when(listingRepository.save(any(Listing.class))).thenReturn(expectedListing);
 
         Listing result = serviceImplementation.saveListing(listingDTO);
