@@ -47,7 +47,8 @@ public class ListingController {
     @GetMapping("/{imageID}/image")
     public ResponseEntity<byte[]> getImageById(@PathVariable("imageID") Long imageID) {
         Listing listing = listingService.getListingById(imageID);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(listing.getPhoto());
+       // return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(listing.getImages());
+        return null;
     }
 
     @PostMapping
@@ -58,7 +59,7 @@ public class ListingController {
             @RequestParam("description") String description,
             @RequestParam("condition") String condition,
             @RequestParam("statusListing") String listingStatus,
-            @RequestPart("image") MultipartFile image) {
+            @RequestPart("image") List<MultipartFile> images) {
 
         ListingDTO dto = new ListingDTO();
         dto.setTitle(title);
@@ -67,9 +68,10 @@ public class ListingController {
         dto.setDescription(description);
         dto.setCondition(condition);
         dto.setStatusListing(listingStatus);
+        dto.setImageFiles(images);
 
         try {
-            return new ResponseEntity<>(listingService.saveListing(dto, image), HttpStatus.CREATED);
+            return new ResponseEntity<>(listingService.saveListing(dto), HttpStatus.CREATED);
         } catch (ListingFailedToSaveException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
