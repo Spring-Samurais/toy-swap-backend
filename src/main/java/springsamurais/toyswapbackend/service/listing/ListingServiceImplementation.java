@@ -93,7 +93,7 @@ public class ListingServiceImplementation implements ListingService {
     }
 
     @Override
-    public void deleteListingsByMember(Long memberID) throws ListingNotFoundException, MemberNotFoundException {
+    public void deleteListingsByMember(Long memberID) throws MemberNotFoundException {
         List<Listing> listings = listingRepository.findByMemberId(memberID);
         if (listings.isEmpty()) {
             throw new MemberNotFoundException("Listing with Member ID " + memberID + " not found");
