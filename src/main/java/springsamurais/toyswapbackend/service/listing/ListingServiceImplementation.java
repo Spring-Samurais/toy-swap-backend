@@ -1,19 +1,19 @@
 package springsamurais.toyswapbackend.service.listing;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.repository.ListingRepository;
-import springsamurais.toyswapbackend.service.imgurapi.service.ImgurService;
-import springsamurais.toyswapbackend.service.member.MemberService;
+import springsamurais.toyswapbackend.service.s3service.service.S3Service;
 import springsamurais.toyswapbackend.service.member.MemberServiceImplementation;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class ListingServiceImplementation implements ListingService {
     @Autowired
     MemberServiceImplementation memberService;
     @Autowired
-    ImgurService imgurService;
+    S3Service s3Service;
 
     @Override
     @Cacheable(value = "listings")
@@ -50,7 +50,7 @@ public class ListingServiceImplementation implements ListingService {
     public Listing saveListing(ListingDTO listingInput) throws ListingFailedToSaveException {
         Listing listing;
         try {
-            listing = listingInput.toEntity(memberService.getMemberByID(listingInput.getMemberId()), imgurService);
+            listing = listingInput.toEntity(memberService.getMemberByID(listingInput.getMemberId()), s3Service);
         } catch (MemberNotFoundException | IOException e) {
             throw new ListingFailedToSaveException("Failed to save the list, reason: " + e.getMessage());
         }
