@@ -23,6 +23,7 @@ public class Listing {
     private Long id;
 
     @NotNull
+    @Column(unique = true)
     private String title;
 
     private LocalDateTime datePosted;
