@@ -42,7 +42,7 @@ public class Listing {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id", nullable = false)
-    @JsonIgnoreProperties({"listings","name","location"})
+    @JsonIgnoreProperties({"listings","name"})
     private Member member;
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
