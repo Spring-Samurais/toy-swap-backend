@@ -4,14 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cache.CacheManager;
-import org.springframework.test.context.ContextConfiguration;
-import springsamurais.toyswapbackend.config.CacheConfig;
 import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.Member;
 import springsamurais.toyswapbackend.repository.MemberRepository;
@@ -22,7 +15,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
 
 class MemberServiceImplementationTest {
     @Mock
@@ -42,7 +34,6 @@ class MemberServiceImplementationTest {
         membersList = new ArrayList<>();
         membersList.add(member);
         membersList.add(new Member(2L, "Nicolas", "Nick", "Cardiff", null));
-
     }
 
     @Test
@@ -100,7 +91,6 @@ class MemberServiceImplementationTest {
         when(memberRepository.save(any(Member.class))).thenReturn(member);
 
         Member updatedMember = memberService.updateMember(1L, member);
-
 
         assertNotNull(updatedMember);
         assertEquals("Andrew", updatedMember.getName());

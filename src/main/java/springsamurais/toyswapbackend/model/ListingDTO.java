@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+import springsamurais.toyswapbackend.service.imgurapi.service.ImgurService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Data
@@ -21,20 +23,39 @@ public class ListingDTO {
     private String description;
     private String condition;
     private String statusListing;
+    private List<MultipartFile> imageFiles;
 
 
-    public Listing toEntity(Member member, MultipartFile imageData) throws IOException {
+
+    public Listing toEntity(Member member, ImgurService imgurService) throws IOException {
         Listing listing = new Listing();
 
         listing.setTitle(this.title);
         listing.setMember(member);
         listing.setDatePosted(LocalDateTime.now());
-        listing.setPhoto(imageData.getBytes());
         listing.setCategory(Category.valueOf(this.category));
         listing.setDescription(this.description);
         listing.setCondition(ItemCondition.valueOf(this.condition));
         listing.setStatusListing(Status.valueOf(this.statusListing));
         listing.setComments(null);
+
+
+        List<Image> imagesList = new ArrayList<>();
+        int counter = 1;
+        //TODO Stream this iteration :D
+        for (MultipartFile file : imageFiles) {
+            String base64Image = Base64.getEncoder().encodeToString(file.getBytes());
+            String url = imgurService.uploadImage(base64Image, listing.getTitle() +" image: "+ counter);
+            Image image = new Image();
+            image.setImageName(file.getOriginalFilename());
+            image.setUrl(url);
+            image.setListing(listing);
+            imagesList.add(image);
+            counter++;
+        }
+        listing.setImages(imagesList);
+
+
         return listing;
     }
 }

@@ -1,7 +1,8 @@
 package springsamurais.toyswapbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,13 +25,6 @@ public class Listing {
     @NotNull
     private String title;
 
-    @Lob
-    private byte[] photo;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
-
     private LocalDateTime datePosted;
 
     @Enumerated(EnumType.STRING)
@@ -45,8 +39,18 @@ public class Listing {
     @Enumerated(EnumType.STRING)
     private Status statusListing;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "member_id", nullable = false)
+    @JsonIgnoreProperties({"listings","name"})
+    private Member member;
+
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference // Avoid nasty r
+    @JsonIgnoreProperties({"id","imageName"})
+    private List<Image> images;
 
 }

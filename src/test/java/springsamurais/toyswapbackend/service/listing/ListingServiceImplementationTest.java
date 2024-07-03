@@ -9,6 +9,7 @@ import springsamurais.toyswapbackend.exception.*;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.repository.ListingRepository;
 import springsamurais.toyswapbackend.repository.MemberRepository;
+import springsamurais.toyswapbackend.service.imgurapi.service.ImgurService;
 import springsamurais.toyswapbackend.service.member.MemberServiceImplementation;
 
 import java.io.IOException;
@@ -21,7 +22,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @DataJpaTest
 class ListingServiceImplementationTest {
@@ -32,26 +32,25 @@ class ListingServiceImplementationTest {
     private MemberRepository memberRepository;
     @Mock
     private MemberServiceImplementation memberServiceImplementation;
+    @Mock
+    private ImgurService imgurService;
 
     @InjectMocks
     private ListingServiceImplementation serviceImplementation;
 
-
-
     private Member memberOne;
     private List<Listing> listings;
-
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         memberOne = new Member(1L, "Test Member", "member", "location", null);
 
-        Listing listing = new Listing(1L, "A listing test", null, memberOne, null, Category.ACTION_FIGURES, "I am a description :-)", ItemCondition.GOOD, Status.AVAILABLE, null);
-        Listing listing2 = new Listing(2L, "Another listing test", null, memberOne, null, Category.DOLLS, "Description2", ItemCondition.LIKE_NEW, Status.PENDING, null);
-        Listing listing3 = new Listing(3L, "Third listing test", null, memberOne, null, Category.CONSTRUCTION_TOYS, "Description3", ItemCondition.LIKE_NEW, Status.SWAPPED, null);
-        Listing listing4 = new Listing(4L, "Fourth listing test", null, memberOne, null, Category.VEHICLES, "Description4", ItemCondition.USED, Status.AVAILABLE, null);
-        Listing listing5 = new Listing(5L, "Fifth listing test", null, memberOne, null, Category.EDUCATIONAL_TOYS, "Description5", ItemCondition.DAMAGED, Status.PENDING, null);
+        Listing listing = new Listing(1L, "A listing test", LocalDateTime.now(), Category.ACTION_FIGURES, "I am a description :-)", ItemCondition.GOOD, Status.AVAILABLE, memberOne, null, null);
+        Listing listing2 = new Listing(2L, "Another listing test", LocalDateTime.now(), Category.DOLLS, "Description2", ItemCondition.LIKE_NEW, Status.PENDING, memberOne, null, null);
+        Listing listing3 = new Listing(3L, "Third listing test", LocalDateTime.now(), Category.CONSTRUCTION_TOYS, "Description3", ItemCondition.LIKE_NEW, Status.SWAPPED, memberOne, null, null);
+        Listing listing4 = new Listing(4L, "Fourth listing test", LocalDateTime.now(), Category.VEHICLES, "Description4", ItemCondition.USED, Status.AVAILABLE, memberOne, null, null);
+        Listing listing5 = new Listing(5L, "Fifth listing test", LocalDateTime.now(), Category.EDUCATIONAL_TOYS, "Description5", ItemCondition.DAMAGED, Status.PENDING, memberOne, null, null);
         listings = Arrays.asList(listing, listing2, listing3, listing4, listing5);
     }
 
@@ -62,15 +61,14 @@ class ListingServiceImplementationTest {
         List<Listing> result = serviceImplementation.getAllListings();
 
         assertEquals(5, result.size());
-        assertEquals("A listing test", result.getFirst().getTitle());
-        assertEquals("I am a description :-)", result.getFirst().getDescription());
+        assertEquals("A listing test", result.get(0).getTitle());
+        assertEquals("I am a description :-)", result.get(0).getDescription());
         assertEquals("Another listing test", result.get(1).getTitle());
     }
 
-
     @Test
     void getListingById() {
-        when(listingRepository.findById(1L)).thenReturn(Optional.ofNullable(listings.getFirst()));
+        when(listingRepository.findById(1L)).thenReturn(Optional.ofNullable(listings.get(0)));
 
         assertEquals("A listing test", serviceImplementation.getListingById(1L).getTitle());
         assertEquals("I am a description :-)", serviceImplementation.getListingById(1L).getDescription());
@@ -96,19 +94,17 @@ class ListingServiceImplementationTest {
         listingDTO.setCondition("USED");
         listingDTO.setStatusListing("AVAILABLE");
 
-
         MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image content".getBytes());
+        listingDTO.setImageFiles(Collections.singletonList(image));
 
         Member member = new Member(1L, "Test Member", "member", "location", null);
-        Listing expectedListing = new Listing(6L, "New listing test", image.getBytes(), member, LocalDateTime.now(), Category.CONSTRUCTION_TOYS, "New description", ItemCondition.USED, Status.AVAILABLE, null);
-
+        Listing expectedListing = new Listing(6L, "New listing test", LocalDateTime.now(), Category.CONSTRUCTION_TOYS, "New description", ItemCondition.USED, Status.AVAILABLE, member, null, null);
 
         when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
+        when(imgurService.uploadImage(anyString(),anyString())).thenReturn("http://imgur.com/image.jpg");
         when(listingRepository.save(any(Listing.class))).thenReturn(expectedListing);
 
-
-        Listing result = serviceImplementation.saveListing(listingDTO, image);
-
+        Listing result = serviceImplementation.saveListing(listingDTO);
 
         assertNotNull(result);
         assertEquals("New listing test", result.getTitle());
@@ -122,15 +118,8 @@ class ListingServiceImplementationTest {
 
     @Test
     void updateListingTest() throws MemberNotFoundException, IOException {
-        Listing listingOne = listings.getFirst();
-        Listing listingUpdate = new Listing();
-        listingUpdate.setId(1L);
-        listingUpdate.setTitle("New listing test");
-        listingUpdate.setMember(memberOne);
-        listingUpdate.setCategory(Category.CONSTRUCTION_TOYS);
-        listingUpdate.setDescription("New description");
-        listingUpdate.setCondition(ItemCondition.GOOD);
-        listingUpdate.setStatusListing(Status.AVAILABLE);
+        Listing listingOne = listings.get(0);
+        Listing listingUpdate = new Listing(1L, "New listing test", LocalDateTime.now(), Category.CONSTRUCTION_TOYS, "New description", ItemCondition.GOOD, Status.AVAILABLE, memberOne, null, null);
 
         Mockito.when(listingRepository.existsById(1L)).thenReturn(true);
         Mockito.when(listingRepository.save(listingUpdate)).thenReturn(listingUpdate);
@@ -138,37 +127,37 @@ class ListingServiceImplementationTest {
         Listing updatedListing = serviceImplementation.updateListing(listingUpdate);
         assertEquals("New listing test", updatedListing.getTitle());
         assertEquals("New description", updatedListing.getDescription());
-
     }
+
     @Test
     void updateNotFoundListingTest() throws MemberNotFoundException, IOException {
         when(listingRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ListingNotFoundException.class, () -> serviceImplementation.updateListing(listings.getFirst()));
+        assertThrows(ListingNotFoundException.class, () -> serviceImplementation.updateListing(listings.get(0)));
 
         verify(listingRepository).existsById(1L);
     }
 
     @Test
     void testDeleteListingById_Success() {
-        when(listingRepository.findById(listings.getFirst().getId())).thenReturn(Optional.of(listings.getFirst()));
+        when(listingRepository.findById(listings.get(0).getId())).thenReturn(Optional.of(listings.get(0)));
 
-        serviceImplementation.deleteListingById(listings.getFirst().getId());
+        serviceImplementation.deleteListingById(listings.get(0).getId());
 
         verify(listingRepository, times(1)).findById(listings.get(0).getId());
-        verify(listingRepository, times(1)).delete(listings.getFirst());
+        verify(listingRepository, times(1)).delete(listings.get(0));
     }
 
     @Test
     @DisplayName("Delete but given ID can't be found")
     void testDeleteListingById_NotFound() {
-        when(listingRepository.findById(listings.getFirst().getId())).thenReturn(Optional.empty());
+        when(listingRepository.findById(listings.get(0).getId())).thenReturn(Optional.empty());
 
         assertThrows(ListingNotFoundException.class, () -> {
-            serviceImplementation.deleteListingById(listings.getFirst().getId());
+            serviceImplementation.deleteListingById(listings.get(0).getId());
         });
 
-        verify(listingRepository, times(1)).findById(listings.getFirst().getId());
+        verify(listingRepository, times(1)).findById(listings.get(0).getId());
         verify(listingRepository, times(0)).delete(any(Listing.class));
     }
 

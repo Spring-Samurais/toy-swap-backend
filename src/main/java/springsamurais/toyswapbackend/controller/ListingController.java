@@ -3,7 +3,6 @@ package springsamurais.toyswapbackend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,19 +34,9 @@ public class ListingController {
     @GetMapping("/{listingID}")
     public ResponseEntity<?> getListingById(@PathVariable("listingID") Long listingID) {
         Listing listingFound;
-        try {
-            listingFound = listingService.getListingById(listingID);
-        } catch (ListingNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(listingFound, HttpStatus.OK);
-    }
 
-    //Might delete later
-    @GetMapping("/{imageID}/image")
-    public ResponseEntity<byte[]> getImageById(@PathVariable("imageID") Long imageID) {
-        Listing listing = listingService.getListingById(imageID);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(listing.getPhoto());
+        listingFound = listingService.getListingById(listingID);
+        return new ResponseEntity<>(listingFound, HttpStatus.OK);
     }
 
     @PostMapping
@@ -58,7 +47,7 @@ public class ListingController {
             @RequestParam("description") String description,
             @RequestParam("condition") String condition,
             @RequestParam("statusListing") String listingStatus,
-            @RequestPart("image") MultipartFile image) {
+            @RequestPart("image") List<MultipartFile> images) {
 
         ListingDTO dto = new ListingDTO();
         dto.setTitle(title);
@@ -67,45 +56,32 @@ public class ListingController {
         dto.setDescription(description);
         dto.setCondition(condition);
         dto.setStatusListing(listingStatus);
+        dto.setImageFiles(images);
 
-        try {
-            return new ResponseEntity<>(listingService.saveListing(dto, image), HttpStatus.CREATED);
-        } catch (ListingFailedToSaveException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(listingService.saveListing(dto), HttpStatus.CREATED);
+
     }
 
     @PutMapping
     public ResponseEntity<?> updateListing(@RequestBody Listing listing) {
-        try {
-            Listing updatedListing = listingService.updateListing(listing);
-            return new ResponseEntity<>(updatedListing, HttpStatus.OK);
-        } catch (ListingNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (InvalidListingException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        Listing updatedListing = listingService.updateListing(listing);
+        return new ResponseEntity<>(updatedListing, HttpStatus.OK);
+
     }
 
 
     @DeleteMapping("/{listingID}")
     public ResponseEntity<?> deleteItem(@PathVariable("listingID") Long listingID) {
-        try {
-            listingService.deleteListingById(listingID);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (ListingNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+        listingService.deleteListingById(listingID);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
     }
 
     @DeleteMapping("/member/{memberID}")
-    public ResponseEntity<?> deleteItemsByMember(@PathVariable("memberID") Long memberID) {
-        try {
+    public ResponseEntity<?> deleteItemsByMember(@PathVariable("memberID") Long memberID) throws MemberNotFoundException {
+
             listingService.deleteListingsByMember(memberID);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (ListingNotFoundException | MemberNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
     }
 }
 

@@ -1,11 +1,11 @@
 package springsamurais.toyswapbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Blob;
 
 @Entity
 @Table(name = "image")
@@ -21,12 +21,12 @@ public class Image {
     @Column(nullable = false)
     private String imageName;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    //@JoinColumn(name = "", nullable = false)
-    private Listing listing;
-
-    @Lob
     @Column(nullable = false)
-    private Blob image;
+    private String url;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "listing_id", nullable = false)
+    @JsonBackReference // Avoid nasty recursion
+    private Listing listing;
 
 }
