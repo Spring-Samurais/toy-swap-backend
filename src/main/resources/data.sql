@@ -33,6 +33,18 @@ VALUES ('Vintage Train Set', (SELECT id FROM member WHERE nickname = 'userOne'),
 INSERT INTO listing (title, member_id, date_posted, category, description, condition, status_listing)
 VALUES ('Electronic Learning Tablet', (SELECT id FROM member WHERE nickname = 'userTwo'), '2024-08-10', 'ELECTRONIC_TOYS', 'An electronic learning tablet for kids.', 'BRAND_NEW', 'AVAILABLE');
 
+
+INSERT INTO image (image_name, url, listing_id) VALUES
+                                                     ('Vintage Action Figure Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Vintage Action Figure')),
+                                                     ('Classic Toy Car Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Classic Toy Car')),
+                                                     ('Educational Board Game Set Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Educational Board Game Set')),
+                                                     ('Electronic Stuffed Animal Collection Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Electronic Stuffed Animal Collection')),
+                                                     ('Lego Building Set Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Lego Building Set')),
+                                                     ('Antique Doll Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Antique Doll')),
+                                                     ('Remote Control Car Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Remote Control Car')),
+                                                     ('Educational Puzzle Set Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Educational Puzzle Set')),
+                                                     ('Vintage Train Set Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Vintage Train Set')),
+                                                     ('Electronic Learning Tablet Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Electronic Learning Tablet'));
 -- UPDATE listing
 -- SET photo = FILE_READ('src/main/resources/images/action_figure.jpg')
 -- WHERE id = 1;
