@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
-import springsamurais.toyswapbackend.service.imgurapi.service.ImgurService;
+import springsamurais.toyswapbackend.service.s3service.service.S3Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ public class ListingDTO {
 
 
 
-    public Listing toEntity(Member member, ImgurService imgurService) throws IOException {
+    public Listing toEntity(Member member, S3Service s3Service) throws IOException {
         Listing listing = new Listing();
 
         listing.setTitle(this.title);
@@ -41,20 +41,18 @@ public class ListingDTO {
 
 
         List<Image> imagesList = new ArrayList<>();
-        int counter = 1;
         //TODO Stream this iteration :D
         for (MultipartFile file : imageFiles) {
-            String base64Image = Base64.getEncoder().encodeToString(file.getBytes());
-            String url = imgurService.uploadImage(base64Image, listing.getTitle() +" image: "+ counter);
+
+            String url = s3Service.uploadFileS3(file);
+
             Image image = new Image();
             image.setImageName(file.getOriginalFilename());
             image.setUrl(url);
             image.setListing(listing);
             imagesList.add(image);
-            counter++;
         }
         listing.setImages(imagesList);
-
 
         return listing;
     }
