@@ -35,7 +35,7 @@ VALUES ('Electronic Learning Tablet', (SELECT id FROM member WHERE nickname = 'u
 
 
 INSERT INTO image (image_name, url, listing_id) VALUES
-                                                   ('Vintage Action Figure Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Vintage Action Figure')),
+                                                   ('Vintage Action Figure Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/action_figure.jpg', (SELECT id FROM listing WHERE title = 'Vintage Action Figure')),
                                                    ('Classic Toy Car Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Classic Toy Car')),
                                                    ('Educational Board Game Set Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Educational Board Game Set')),
                                                    ('Electronic Stuffed Animal Collection Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Electronic Stuffed Animal Collection')),
