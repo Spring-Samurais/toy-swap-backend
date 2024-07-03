@@ -9,6 +9,7 @@ import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.repository.ListingRepository;
+import springsamurais.toyswapbackend.service.imgurapi.service.ImgurService;
 import springsamurais.toyswapbackend.service.member.MemberService;
 import springsamurais.toyswapbackend.service.member.MemberServiceImplementation;
 
@@ -25,6 +26,8 @@ public class ListingServiceImplementation implements ListingService {
     ListingRepository listingRepository;
     @Autowired
     MemberServiceImplementation memberService;
+    @Autowired
+    ImgurService imgurService;
 
     @Override
     public List<Listing> getAllListings() {
@@ -39,16 +42,26 @@ public class ListingServiceImplementation implements ListingService {
     }
 
     @Override
-    public Listing saveListing(ListingDTO listingInput, MultipartFile imageInput) throws ListingFailedToSaveException {
+    public Listing saveListing(ListingDTO listingInput) throws ListingFailedToSaveException {
         Listing listing;
         try {
-            listing = listingInput.toEntity(memberService.getMemberByID(listingInput.getMemberId()), imageInput);
+            listing = listingInput.toEntity(memberService.getMemberByID(listingInput.getMemberId()), imgurService);
         } catch (MemberNotFoundException | IOException e) {
             throw new ListingFailedToSaveException("Failed to save the list, reason: " + e.getMessage());
         }
 
         return listingRepository.save(listing);
     }
+    @Override
+    public Listing updateListing(Listing listing)  {
+        validateListing(listing);
+
+        if (!listingRepository.existsById(listing.getId())) {
+            throw new ListingNotFoundException("Listing with ID not found");
+        }
+        return listingRepository.save(listing);
+    }
+
 
     private void validateListing(Listing listing) throws ListingFailedToSaveException {
         if (listing.getTitle() == null || listing.getTitle().isEmpty()) {
@@ -80,7 +93,7 @@ public class ListingServiceImplementation implements ListingService {
     }
 
     @Override
-    public void deleteListingsByMember(Long memberID) throws ListingNotFoundException, MemberNotFoundException {
+    public void deleteListingsByMember(Long memberID) throws MemberNotFoundException {
         List<Listing> listings = listingRepository.findByMemberId(memberID);
         if (listings.isEmpty()) {
             throw new MemberNotFoundException("Listing with Member ID " + memberID + " not found");

@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -21,6 +22,7 @@ import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.service.listing.ListingServiceImplementation;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,9 +55,8 @@ class ListingControllerTest {
     @Test
     @DisplayName("GET -> All Listings")
     void getAllItemsTest() throws Exception {
-        Listing listing = new Listing(1L, "A listing test", null, memberOne, null, Category.ACTION_FIGURES, "I am a description :-)", ItemCondition.GOOD, Status.AVAILABLE, null);
-
-        Listing listing2 = new Listing(2L, "Another listing test", null, memberOne, null, Category.DOLLS, "Description2", ItemCondition.LIKE_NEW, Status.PENDING, null);
+        Listing listing = new Listing(1L, "A listing test", LocalDateTime.now(), Category.ACTION_FIGURES, "description", ItemCondition.GOOD, Status.AVAILABLE, memberOne, null, null);
+        Listing listing2 = new Listing(2L, "Another listing test", LocalDateTime.now(), Category.DOLLS, "description", ItemCondition.BRAND_NEW, Status.AVAILABLE, memberOne, null, null);
 
         List<Listing> listings = Arrays.asList(listing, listing2);
 
@@ -69,7 +70,7 @@ class ListingControllerTest {
     @Test
     @DisplayName("GET -> ByID")
     void getByIdTest() throws Exception {
-        Listing listing = new Listing(1L, "A listing test", null, memberOne, null, Category.ACTION_FIGURES, "I am a description :-)", ItemCondition.GOOD, Status.AVAILABLE, null);
+        Listing listing = new Listing(1L, "A listing test", LocalDateTime.now(), Category.ACTION_FIGURES, "description", ItemCondition.GOOD, Status.AVAILABLE, memberOne, null, null);
         when(mockListingService.getListingById(1L)).thenReturn(listing);
 
         this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/listings/1"))
@@ -105,7 +106,7 @@ class ListingControllerTest {
 
         MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image content".getBytes());
 
-        when(mockListingService.saveListing(any(ListingDTO.class), any(MultipartFile.class)))
+        when(mockListingService.saveListing(any(ListingDTO.class)))
                 .thenThrow(new ListingFailedToSaveException("Failed to save listing"));
 
         this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/listings")
@@ -119,7 +120,7 @@ class ListingControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().string("Failed to save listing"));
 
-        verify(mockListingService, times(1)).saveListing(any(ListingDTO.class), any(MultipartFile.class));
+        verify(mockListingService, times(1)).saveListing(any(ListingDTO.class));
     }
 
 
@@ -172,5 +173,30 @@ class ListingControllerTest {
                 .andExpect(MockMvcResultMatchers.content().string("Listing with ID " + memberID + " not found and cant be deleted"));
 
         verify(mockListingService, times(1)).deleteListingsByMember(memberID);
+    }
+    // Update Testings
+    @Test
+    void testUpdateListing_Success() throws Exception {
+        Listing listing = new Listing(1L, "A Update listing test", LocalDateTime.now(), Category.ACTION_FIGURES, "I am a Updated description :-)", ItemCondition.GOOD, Status.AVAILABLE, memberOne, null, null);
+        when(mockListingService.updateListing(listing)).thenReturn(listing);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/listings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(listing)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(listing.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(listing.getTitle()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(listing.getDescription()));
+    }
+
+    @Test
+    void testUpdateListing_NotFound() throws Exception {
+        Listing listing = new Listing(1L, "A Update listing test", LocalDateTime.now(), Category.ACTION_FIGURES, "I am a Updated description :-)", ItemCondition.GOOD, Status.AVAILABLE, memberOne, null, null);
+        doThrow(new ListingNotFoundException("Listing not found")).when(mockListingService).updateListing(listing);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/listings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(listing)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 }

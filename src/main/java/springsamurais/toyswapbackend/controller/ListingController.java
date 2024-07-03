@@ -3,7 +3,6 @@ package springsamurais.toyswapbackend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +11,10 @@ import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.service.listing.ListingServiceImplementation;
+
 import java.util.List;
+
+import springsamurais.toyswapbackend.model.Listing;
 
 
 @RestController
@@ -23,7 +25,6 @@ public class ListingController {
     private ListingServiceImplementation listingService;
 
 
-
     @GetMapping("")
     public ResponseEntity<List<Listing>> getAllItems() {
         List<Listing> listingList = listingService.getAllListings();
@@ -32,26 +33,21 @@ public class ListingController {
 
     @GetMapping("/{listingID}")
     public ResponseEntity<?> getListingById(@PathVariable("listingID") Long listingID) {
-        Listing listingFound = listingService.getListingById(listingID);
-        return new ResponseEntity<>(listingFound, HttpStatus.OK);
-    }
+        Listing listingFound;
 
-    //Might delete later
-    @GetMapping("/{imageID}/image")
-    public ResponseEntity<byte[]>  getImageById(@PathVariable("imageID") Long imageID) {
-        Listing listing = listingService.getListingById(imageID);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(listing.getPhoto());
+        listingFound = listingService.getListingById(listingID);
+        return new ResponseEntity<>(listingFound, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<?> saveListing(
-            @RequestParam("title") String title ,
+            @RequestParam("title") String title,
             @RequestParam("userID") Long memberId,
             @RequestParam("category") String category,
-            @RequestParam("description")  String description,
+            @RequestParam("description") String description,
             @RequestParam("condition") String condition,
             @RequestParam("statusListing") String listingStatus,
-            @RequestPart("image") MultipartFile image) {
+            @RequestPart("image") List<MultipartFile> images) {
 
         ListingDTO dto = new ListingDTO();
         dto.setTitle(title);
@@ -60,35 +56,33 @@ public class ListingController {
         dto.setDescription(description);
         dto.setCondition(condition);
         dto.setStatusListing(listingStatus);
+        dto.setImageFiles(images);
 
-        Listing savedListing = listingService.saveListing(dto, image);
-        return new ResponseEntity<>(savedListing, HttpStatus.CREATED);
+        return new ResponseEntity<>(listingService.saveListing(dto), HttpStatus.CREATED);
 
     }
 
     @PutMapping
-    public void updateItem(@RequestBody Listing listing) {
+    public ResponseEntity<?> updateListing(@RequestBody Listing listing) {
+        Listing updatedListing = listingService.updateListing(listing);
+        return new ResponseEntity<>(updatedListing, HttpStatus.OK);
+
     }
 
 
     @DeleteMapping("/{listingID}")
     public ResponseEntity<?> deleteItem(@PathVariable("listingID") Long listingID) {
-
         listingService.deleteListingById(listingID);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
     }
 
     @DeleteMapping("/member/{memberID}")
-    public ResponseEntity<?> deleteItemsByMember(@PathVariable("memberID") Long memberID) {
+    public ResponseEntity<?> deleteItemsByMember(@PathVariable("memberID") Long memberID) throws MemberNotFoundException {
 
-        try {
             listingService.deleteListingsByMember(memberID);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (ListingNotFoundException | MemberNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
     }
 }
-
 
 
