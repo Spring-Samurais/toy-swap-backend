@@ -1,4 +1,4 @@
--- Insert members
+/*-- Insert members
 INSERT INTO member (name, nickname, location) VALUES ('Juan Martinez', 'userOne', 'London');
 INSERT INTO member (name, nickname, location) VALUES ('Willy Smith', 'userTwo', 'Black Pool');
 
@@ -45,7 +45,7 @@ INSERT INTO image (image_name, url, listing_id) VALUES
                                                    ('Educational Puzzle Set Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Educational Puzzle Set')),
                                                    ('Vintage Train Set Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Vintage Train Set')),
                                                    ('Electronic Learning Tablet Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Electronic Learning Tablet'));
-
+*/
 -- UPDATE listing
 -- SET photo = FILE_READ('src/main/resources/images/action_figure.jpg')
 -- WHERE id = 1;
