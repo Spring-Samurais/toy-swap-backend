@@ -2,6 +2,7 @@ package springsamurais.toyswapbackend.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -109,6 +110,22 @@ public class GlobalExceptionHandler {
         logger.error("ImageFailedToUpload: {}", e.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), HttpStatus.UNPROCESSABLE_ENTITY.value(), "Image Failed to Upload", e.getMessage() +" "+ e.getCause(), request.getDescription(false));
         return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    /**
+     * Handles DataIntegrityViolationException.
+     * This exception is thrown when there is a violation of a database integrity constraint, such as a unique constraint. (Unique title is repeated)
+     *
+     * @param e    the DataIntegrityViolationException
+     * @param request the WebRequest
+     * @return a ResponseEntity containing an ErrorResponse with HTTP status 409 (Conflict)
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException e, WebRequest request) {
+        logger.error("DataIntegrityViolationException: {}", e.getMessage());
+        String title = request.getParameter("title");
+        String shortMessage = title + "  is already in the record ";
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), HttpStatus.CONFLICT.value(), "A record with the same unique identifier already exists.", shortMessage + " is not a valid name", request.getDescription(false));
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     /**
