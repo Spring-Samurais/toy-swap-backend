@@ -35,16 +35,17 @@ VALUES ('Electronic Learning Tablet', (SELECT id FROM member WHERE nickname = 'u
 
 
 INSERT INTO image (image_name, url, listing_id) VALUES
-                                                     ('Vintage Action Figure Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Vintage Action Figure')),
-                                                     ('Classic Toy Car Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Classic Toy Car')),
-                                                     ('Educational Board Game Set Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Educational Board Game Set')),
-                                                     ('Electronic Stuffed Animal Collection Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Electronic Stuffed Animal Collection')),
-                                                     ('Lego Building Set Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Lego Building Set')),
-                                                     ('Antique Doll Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Antique Doll')),
-                                                     ('Remote Control Car Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Remote Control Car')),
-                                                     ('Educational Puzzle Set Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Educational Puzzle Set')),
-                                                     ('Vintage Train Set Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Vintage Train Set')),
-                                                     ('Electronic Learning Tablet Image', 'https://imgur.com/test-input-image-2-m7TOkyj', (SELECT id FROM listing WHERE title = 'Electronic Learning Tablet'));
+                                                   ('Vintage Action Figure Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Vintage Action Figure')),
+                                                   ('Classic Toy Car Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Classic Toy Car')),
+                                                   ('Educational Board Game Set Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Educational Board Game Set')),
+                                                   ('Electronic Stuffed Animal Collection Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Electronic Stuffed Animal Collection')),
+                                                   ('Lego Building Set Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Lego Building Set')),
+                                                   ('Antique Doll Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Antique Doll')),
+                                                   ('Remote Control Car Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Remote Control Car')),
+                                                   ('Educational Puzzle Set Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Educational Puzzle Set')),
+                                                   ('Vintage Train Set Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Vintage Train Set')),
+                                                   ('Electronic Learning Tablet Image', 'https://elasticbeanstalk-eu-west-2-058264262755.s3.eu-west-2.amazonaws.com/images.jpeg', (SELECT id FROM listing WHERE title = 'Electronic Learning Tablet'));
+
 -- UPDATE listing
 -- SET photo = FILE_READ('src/main/resources/images/action_figure.jpg')
 -- WHERE id = 1;
