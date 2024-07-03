@@ -1,7 +1,9 @@
 package springsamurais.toyswapbackend.service.member;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.Member;
 import springsamurais.toyswapbackend.repository.MemberRepository;
@@ -12,18 +14,21 @@ import java.util.Optional;
 
 
 @Service
+@Transactional
 public class MemberServiceImplementation implements MemberService {
 
     @Autowired
     MemberRepository memberRepository;
 
     @Override
+    @Cacheable(value = "members", key = "#memberID")
     public Member getMemberByID(Long memberID) throws MemberNotFoundException {
         return memberRepository.findById(memberID)
                 .orElseThrow(() -> new MemberNotFoundException("Member with ID " + memberID + " not found"));
     }
 
     @Override
+    @Cacheable(value = "members")
     public List<Member> getAllMembers() {
         List<Member> membersListResult = new ArrayList<>();
         memberRepository.findAll().forEach(membersListResult::add);
@@ -52,7 +57,5 @@ public class MemberServiceImplementation implements MemberService {
         }
         memberRepository.deleteById(memberID);
     }
-
-
 }
 

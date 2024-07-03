@@ -1,6 +1,9 @@
 package springsamurais.toyswapbackend.service.listing;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +33,7 @@ public class ListingServiceImplementation implements ListingService {
     ImgurService imgurService;
 
     @Override
+    @Cacheable(value = "listings")
     public List<Listing> getAllListings() {
         List<Listing> listingsListResult = new ArrayList<>();
         listingRepository.findAll().forEach(listingsListResult::add);
@@ -37,6 +41,7 @@ public class ListingServiceImplementation implements ListingService {
     }
 
     @Override
+    @Cacheable(value = "listings", key = "#id")
     public Listing getListingById(Long id) {
         return listingRepository.findById(id).orElseThrow(() -> new ListingNotFoundException("Listing with ID " + id + " not found"));
     }
@@ -53,6 +58,7 @@ public class ListingServiceImplementation implements ListingService {
         return listingRepository.save(listing);
     }
     @Override
+    @CachePut(value = "listings", key = "#listing.id")
     public Listing updateListing(Listing listing)  {
         validateListing(listing);
 
@@ -86,6 +92,7 @@ public class ListingServiceImplementation implements ListingService {
 
 
     @Override
+    @CacheEvict(value = "listings", key = "#listingID")
     public void deleteListingById(Long listingID) throws ListingNotFoundException {
 
         Listing listing = listingRepository.findById(listingID).orElseThrow(() -> new ListingNotFoundException("Listing with ID " + listingID + " not found"));

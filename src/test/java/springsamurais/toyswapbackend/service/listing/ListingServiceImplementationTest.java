@@ -112,6 +112,8 @@ class ListingServiceImplementationTest {
         assertEquals(ItemCondition.USED, result.getCondition());
         assertEquals(Status.AVAILABLE, result.getStatusListing());
         assertEquals(member, result.getMember());
+        assertArrayEquals(image.getBytes(), result.getPhoto());
+
     }
 
     @Test
