@@ -9,7 +9,6 @@ import springsamurais.toyswapbackend.service.s3service.service.S3Service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 @Data
@@ -44,7 +43,7 @@ public class ListingDTO {
         //TODO Stream this iteration :D
         for (MultipartFile file : imageFiles) {
 
-            String url = s3Service.uploadFileS3(file);
+            String url = s3Service.uploadImageS3(file);
 
             Image image = new Image();
             image.setImageName(file.getOriginalFilename());
