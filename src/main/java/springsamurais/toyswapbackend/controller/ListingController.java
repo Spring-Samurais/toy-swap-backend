@@ -7,8 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springsamurais.toyswapbackend.exception.*;
-import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
-import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.service.listing.ListingServiceImplementation;
 
