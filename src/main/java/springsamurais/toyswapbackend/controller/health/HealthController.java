@@ -6,11 +6,14 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthComponent;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.boot.actuate.health.HealthEndpoint;
+import springsamurais.toyswapbackend.repository.ListingRepository;
+import springsamurais.toyswapbackend.repository.MemberRepository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -47,20 +50,16 @@ public class HealthController {
         return healthEndpoint.health();
     }
 
-//    public HealthController(DataSource dataSource) {
-//        this.dataSource = dataSource;
-//    }
-
     @GetMapping("/health/allcon")
-    public ResponseEntity<String> checkHealth() {
+    public ResponseEntity<String> checkConnectionHealth() {
         try (Connection connection = dataSource.getConnection()) {
             if (connection.isValid(2)) {
-                return ResponseEntity.ok("Application is up and running");
+                return ResponseEntity.ok("Connection is valid and Application is up and running");
             } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Application is down");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error and Application is down");
             }
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Application is down");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error and Application is down");
         }
     }
 
@@ -70,12 +69,12 @@ public class HealthController {
             Cache cacheMember = cacheManager.getCache("members" );
             Cache cacheListings = cacheManager.getCache("listings");
             if (cacheMember != null && cacheListings != null) {
-                return ResponseEntity.ok("Application is up and running");
+                return ResponseEntity.ok("Cache is working and Application is up and running");
             } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Application is down");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error and Application is down");
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Application is down");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error and Application is down");
         }
     }
 }
