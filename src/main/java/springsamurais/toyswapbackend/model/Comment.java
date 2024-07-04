@@ -1,5 +1,6 @@
 package springsamurais.toyswapbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +28,7 @@ public class Comment {
     private Member commenter;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    //@JoinColumn(name = "", nullable = false)
+    @JsonBackReference
     private Listing listing;
 
     private Date dateCommented;
