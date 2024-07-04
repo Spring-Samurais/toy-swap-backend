@@ -14,7 +14,8 @@ import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.repository.ListingRepository;
-import springsamurais.toyswapbackend.service.s3service.service.S3Service;
+import springsamurais.toyswapbackend.service.imgurapi.service.ImgurService;
+import springsamurais.toyswapbackend.service.member.MemberService;
 import springsamurais.toyswapbackend.service.member.MemberServiceImplementation;
 
 import java.io.IOException;
