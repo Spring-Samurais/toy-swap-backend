@@ -31,7 +31,7 @@ public class Config {
         return properties.getProperty(key);
     }
 
-    @Bean
+/*    @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(getProperty("db.driver-class-name"));
@@ -40,5 +40,5 @@ public class Config {
         dataSource.setPassword(getProperty("db.password"));
         return dataSource;
 
-    }
+    }*/
 }
