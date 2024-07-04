@@ -1,16 +1,19 @@
 package springsamurais.toyswapbackend.service.listing;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.repository.ListingRepository;
-import springsamurais.toyswapbackend.service.member.MemberService;
 import springsamurais.toyswapbackend.service.member.MemberServiceImplementation;
+import springsamurais.toyswapbackend.service.s3service.service.S3Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,8 +28,11 @@ public class ListingServiceImplementation implements ListingService {
     ListingRepository listingRepository;
     @Autowired
     MemberServiceImplementation memberService;
+    @Autowired
+    S3Service s3Service;
 
     @Override
+    @Cacheable(value = "listings")
     public List<Listing> getAllListings() {
         List<Listing> listingsListResult = new ArrayList<>();
         listingRepository.findAll().forEach(listingsListResult::add);
@@ -34,15 +40,16 @@ public class ListingServiceImplementation implements ListingService {
     }
 
     @Override
+    @Cacheable(value = "listings", key = "#id")
     public Listing getListingById(Long id) {
         return listingRepository.findById(id).orElseThrow(() -> new ListingNotFoundException("Listing with ID " + id + " not found"));
     }
 
     @Override
-    public Listing saveListing(ListingDTO listingInput, MultipartFile imageInput) throws ListingFailedToSaveException {
+    public Listing saveListing(ListingDTO listingInput) throws ListingFailedToSaveException {
         Listing listing;
         try {
-            listing = listingInput.toEntity(memberService.getMemberByID(listingInput.getMemberId()), imageInput);
+            listing = listingInput.toEntity(memberService.getMemberByID(listingInput.getMemberId()), s3Service);
         } catch (MemberNotFoundException | IOException e) {
             throw new ListingFailedToSaveException("Failed to save the list, reason: " + e.getMessage());
         }
@@ -50,6 +57,7 @@ public class ListingServiceImplementation implements ListingService {
         return listingRepository.save(listing);
     }
     @Override
+    @CachePut(value = "listings", key = "#listing.id")
     public Listing updateListing(Listing listing)  {
         validateListing(listing);
 
@@ -83,6 +91,7 @@ public class ListingServiceImplementation implements ListingService {
 
 
     @Override
+    @CacheEvict(value = "listings", key = "#listingID")
     public void deleteListingById(Long listingID) throws ListingNotFoundException {
 
         Listing listing = listingRepository.findById(listingID).orElseThrow(() -> new ListingNotFoundException("Listing with ID " + listingID + " not found"));
@@ -90,7 +99,7 @@ public class ListingServiceImplementation implements ListingService {
     }
 
     @Override
-    public void deleteListingsByMember(Long memberID) throws ListingNotFoundException, MemberNotFoundException {
+    public void deleteListingsByMember(Long memberID) throws MemberNotFoundException {
         List<Listing> listings = listingRepository.findByMemberId(memberID);
         if (listings.isEmpty()) {
             throw new MemberNotFoundException("Listing with Member ID " + memberID + " not found");

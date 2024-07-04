@@ -4,7 +4,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
+import org.springframework.test.context.ContextConfiguration;
+import springsamurais.toyswapbackend.config.CacheConfig;
 import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.Member;
 import springsamurais.toyswapbackend.repository.MemberRepository;
@@ -15,6 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
 
 class MemberServiceImplementationTest {
     @Mock
@@ -34,6 +42,7 @@ class MemberServiceImplementationTest {
         membersList = new ArrayList<>();
         membersList.add(member);
         membersList.add(new Member(2L, "Nicolas", "Nick", "Cardiff", null));
+
     }
 
     @Test
@@ -92,6 +101,7 @@ class MemberServiceImplementationTest {
 
         Member updatedMember = memberService.updateMember(1L, member);
 
+
         assertNotNull(updatedMember);
         assertEquals("Andrew", updatedMember.getName());
 
@@ -136,5 +146,51 @@ class MemberServiceImplementationTest {
 
         verify(memberRepository, times(1)).existsById(1L);
         verify(memberRepository, times(0)).deleteById(anyLong());
+    }
+
+
+    // Caching Testings
+
+    @Test
+    public void testGetMemberByID_CacheHit() throws MemberNotFoundException {
+        // Mock data
+        Long memberId = 1L;
+        Member mockMember = new Member(memberId, "Test Member", "test", "Location", new ArrayList<>());
+
+        // Mock repository method to return a member
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(mockMember));
+
+        // First invocation: Retrieve member (should hit repository)
+        Member retrievedMember1 = memberService.getMemberByID(memberId);
+
+        // Second invocation: Retrieve member again (should hit cache, not repository)
+        Member retrievedMember2 = memberService.getMemberByID(memberId);
+
+        // Verify repository method called only once
+        verify(memberRepository, times(2)).findById(memberId);
+
+        // Verify cached member is returned
+        assertEquals(memberId, retrievedMember1.getId());
+        assertEquals(memberId, retrievedMember2.getId());
+    }
+
+    @Test
+    public void testGetMemberByID_CacheMiss() throws MemberNotFoundException {
+        // Mock data
+        Long memberId = 1L;
+
+        // Mock repository method to return empty optional (simulating member not found)
+        when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
+
+        // Call the service method and assert that MemberNotFoundException is thrown
+        MemberNotFoundException exception = org.junit.jupiter.api.Assertions.assertThrows(MemberNotFoundException.class, () -> {
+            memberService.getMemberByID(memberId);
+        });
+
+        // Verify repository method called only once
+        verify(memberRepository, times(1)).findById(memberId);
+
+        // Verify exception message
+        assertEquals("Member with ID " + memberId + " not found", exception.getMessage());
     }
 }
