@@ -26,7 +26,7 @@ public class ListingDTO {
 
 
 
-    public Listing toEntity(Member member, ImgurService imgurService) throws IOException {
+    public Listing toEntity(Member member, S3Service s3Service) throws IOException {
         Listing listing = new Listing();
 
         listing.setTitle(this.title);
