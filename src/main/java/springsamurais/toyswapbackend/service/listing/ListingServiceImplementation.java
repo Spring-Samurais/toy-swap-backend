@@ -8,12 +8,14 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.*;
 import springsamurais.toyswapbackend.repository.ListingRepository;
-import springsamurais.toyswapbackend.service.s3service.service.S3Service;
+import springsamurais.toyswapbackend.service.imgurapi.service.ImgurService;
+import springsamurais.toyswapbackend.service.member.MemberService;
 import springsamurais.toyswapbackend.service.member.MemberServiceImplementation;
 
 import java.io.IOException;
