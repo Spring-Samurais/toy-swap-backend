@@ -41,6 +41,6 @@ public class Member {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonIgnoreProperties({"photo", "datePosted", "category", "description", "condition", "statusListing", "comments", "member"})
     //@JoinColumn(name = "", nullable = false)
+    @JsonManagedReference
     private List<Listing> listings;
-
 }
