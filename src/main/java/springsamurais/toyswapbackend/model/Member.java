@@ -1,5 +1,6 @@
 package springsamurais.toyswapbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -37,8 +38,7 @@ public class Member {
 
     @Column
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonIgnore
     @JsonIgnoreProperties({"photo", "datePosted", "category", "description", "condition", "statusListing", "comments", "member"})
     //@JoinColumn(name = "", nullable = false)
     private List<Listing> listings;

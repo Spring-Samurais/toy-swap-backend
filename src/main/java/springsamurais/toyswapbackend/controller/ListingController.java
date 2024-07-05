@@ -14,6 +14,8 @@ import java.util.List;
 
 import springsamurais.toyswapbackend.model.Listing;
 
+import javax.annotation.security.PermitAll;
+
 
 @RestController
 @RequestMapping("api/v1/listings")
@@ -24,6 +26,7 @@ public class ListingController {
 
 
     @GetMapping("")
+    @PermitAll
     public ResponseEntity<List<Listing>> getAllItems() {
         List<Listing> listingList = listingService.getAllListings();
         return new ResponseEntity<>(listingList, HttpStatus.OK);
