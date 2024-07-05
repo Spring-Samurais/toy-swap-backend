@@ -32,7 +32,7 @@ public class ListingServiceImplementation implements ListingService {
     S3Service s3Service;
 
     @Override
-    @Cacheable(value = "listings")
+//    @Cacheable(value = "listings")
     public List<Listing> getAllListings() {
         List<Listing> listingsListResult = new ArrayList<>();
         listingRepository.findAll().forEach(listingsListResult::add);
@@ -40,7 +40,7 @@ public class ListingServiceImplementation implements ListingService {
     }
 
     @Override
-    @Cacheable(value = "listings", key = "#id")
+//    @Cacheable(value = "listings", key = "#id")
     public Listing getListingById(Long id) {
         return listingRepository.findById(id).orElseThrow(() -> new ListingNotFoundException("Listing with ID " + id + " not found"));
     }
@@ -57,7 +57,7 @@ public class ListingServiceImplementation implements ListingService {
         return listingRepository.save(listing);
     }
     @Override
-    @CachePut(value = "listings", key = "#listing.id")
+//    @CachePut(value = "listings", key = "#listing.id")
     public Listing updateListing(Listing listing)  {
         validateListing(listing);
 
@@ -91,7 +91,7 @@ public class ListingServiceImplementation implements ListingService {
 
 
     @Override
-    @CacheEvict(value = "listings", key = "#listingID")
+//    @CacheEvict(value = "listings", key = "#listingID")
     public void deleteListingById(Long listingID) throws ListingNotFoundException {
 
         Listing listing = listingRepository.findById(listingID).orElseThrow(() -> new ListingNotFoundException("Listing with ID " + listingID + " not found"));

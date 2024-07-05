@@ -40,16 +40,16 @@ public class ListingController {
     @PostMapping
     public ResponseEntity<?> saveListing(
             @RequestParam("title") String title,
-            @RequestParam("userID") Long memberId,
+            @RequestParam("userID") String memberId,
             @RequestParam("category") String category,
             @RequestParam("description") String description,
             @RequestParam("condition") String condition,
             @RequestParam("statusListing") String listingStatus,
-            @RequestPart("image") List<MultipartFile> images) {
+            @RequestPart("images") List<MultipartFile> images) {
 
         ListingDTO dto = new ListingDTO();
         dto.setTitle(title);
-        dto.setMemberId(memberId);
+        dto.setMemberId(Long.valueOf(memberId));
         dto.setCategory(category);
         dto.setDescription(description);
         dto.setCondition(condition);

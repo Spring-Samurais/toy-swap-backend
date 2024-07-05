@@ -37,7 +37,6 @@ public class Member {
 
     @Column
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonIgnoreProperties({"photo", "datePosted", "category", "description", "condition", "statusListing", "comments", "member"})
     //@JoinColumn(name = "", nullable = false)

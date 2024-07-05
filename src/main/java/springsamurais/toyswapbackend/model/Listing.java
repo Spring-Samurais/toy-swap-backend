@@ -48,6 +48,7 @@ public class Listing {
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonIgnoreProperties({"listings, commenter"})
     @JsonManagedReference
     private List<Comment> comments;
 

@@ -25,7 +25,6 @@ public class ListingDTO {
     private List<MultipartFile> imageFiles;
 
 
-
     public Listing toEntity(Member member, S3Service s3Service) throws IOException {
         Listing listing = new Listing();
 
