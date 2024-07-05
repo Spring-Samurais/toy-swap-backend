@@ -1,6 +1,7 @@
 package springsamurais.toyswapbackend.service.member;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,14 +22,14 @@ public class MemberServiceImplementation implements MemberService {
     MemberRepository memberRepository;
 
     @Override
-//    @Cacheable(value = "members", key = "#memberID")
+    @Cacheable(value = "members", key = "#memberID")
     public Member getMemberByID(Long memberID) throws MemberNotFoundException {
         return memberRepository.findById(memberID)
                 .orElseThrow(() -> new MemberNotFoundException("Member with ID " + memberID + " not found"));
     }
 
     @Override
-//    @Cacheable(value = "members")
+    @Cacheable(value = "members")
     public List<Member> getAllMembers() {
         List<Member> membersListResult = new ArrayList<>();
         memberRepository.findAll().forEach(membersListResult::add);
@@ -36,11 +37,13 @@ public class MemberServiceImplementation implements MemberService {
     }
 
     @Override
+    @CacheEvict(value = "members", allEntries = true)
     public Member addMember(Member member) {
         return memberRepository.save(member);
     }
 
     @Override
+    @CacheEvict(value = "members", allEntries = true)
     public Member updateMember(Long memberID, Member member) throws MemberNotFoundException {
         if (!memberRepository.existsById(memberID)) {
             throw new MemberNotFoundException("Member with ID " + memberID + " not found");
@@ -50,6 +53,7 @@ public class MemberServiceImplementation implements MemberService {
     }
 
     @Override
+    @CacheEvict(value = "members", allEntries = true)
     public void deleteMemberByID(Long memberID) throws MemberNotFoundException {
 
         if (!memberRepository.existsById(memberID)) {
