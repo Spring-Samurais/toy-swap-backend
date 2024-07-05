@@ -21,14 +21,14 @@ public class MemberServiceImplementation implements MemberService {
     MemberRepository memberRepository;
 
     @Override
-    @Cacheable(value = "members", key = "#memberID")
+//    @Cacheable(value = "members", key = "#memberID")
     public Member getMemberByID(Long memberID) throws MemberNotFoundException {
         return memberRepository.findById(memberID)
                 .orElseThrow(() -> new MemberNotFoundException("Member with ID " + memberID + " not found"));
     }
 
     @Override
-    @Cacheable(value = "members")
+//    @Cacheable(value = "members")
     public List<Member> getAllMembers() {
         List<Member> membersListResult = new ArrayList<>();
         memberRepository.findAll().forEach(membersListResult::add);

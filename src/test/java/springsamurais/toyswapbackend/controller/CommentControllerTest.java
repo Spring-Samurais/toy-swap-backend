@@ -100,7 +100,7 @@ class CommentControllerTest {
         mockComment.setText("very Nice");
         mockComment.setCommenter(commenter);
 
-        when(commentsService.saveComment(any(Comment.class))).thenReturn(mockComment);
+        when(commentsService.saveComment(any(springsamurais.toyswapbackend.model.CommentDTO.class))).thenReturn(mockComment);
 
         ObjectMapper mapper = new ObjectMapper();
 

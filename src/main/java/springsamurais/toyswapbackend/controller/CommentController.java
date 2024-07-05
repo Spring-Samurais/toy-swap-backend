@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springsamurais.toyswapbackend.model.Comment;
+import springsamurais.toyswapbackend.model.CommentDTO;
 import springsamurais.toyswapbackend.service.Comments.CommentsService;
 
 import java.util.List;
@@ -29,8 +30,9 @@ public class CommentController {
     }
 
     @PostMapping
-    public ResponseEntity<Comment> saveComment(@RequestBody Comment comment) {
-        Comment commentSaved = commentsService.saveComment(comment);
+    public ResponseEntity<Comment> saveComment(@RequestBody CommentDTO commentDTO) {
+        System.out.println("inside savecommentController");
+        Comment commentSaved = commentsService.saveComment(commentDTO);
         return new ResponseEntity<>(commentSaved, HttpStatus.CREATED);
     }
 
