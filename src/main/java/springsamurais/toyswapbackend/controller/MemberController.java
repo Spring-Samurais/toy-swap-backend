@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springsamurais.toyswapbackend.exception.*;
 import springsamurais.toyswapbackend.model.Member;
+import springsamurais.toyswapbackend.model.MemberDTO;
 import springsamurais.toyswapbackend.service.member.MemberService;
 
 import java.util.List;
@@ -40,9 +41,9 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<?> login(@RequestBody MemberDTO userLogin) {
         try {
-           Member foundMember =  memberService.loginChecker(username,password);
+           Member foundMember =  memberService.loginChecker(userLogin.username(), userLogin.password());
             return new ResponseEntity<>(foundMember, HttpStatus.OK);
         } catch (MemberNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
