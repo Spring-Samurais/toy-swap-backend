@@ -3,18 +3,20 @@ package springsamurais.toyswapbackend.firebase.controller;
 import com.google.firebase.auth.FirebaseToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springsamurais.toyswapbackend.firebase.FirebaseService;
 
+import javax.annotation.security.PermitAll;
+
 @RestController
+@RequestMapping("/api")
 public class AuthController {
 
     @Autowired
     private FirebaseService firebaseService;
 
-    @PostMapping("/api/verifyToken")
+    @PermitAll
+    @GetMapping("/verifyToken")
     public ResponseEntity<?> verifyToken(@RequestHeader("Authorization") String authorizationHeader) {
         String idToken = authorizationHeader.replace("Bearer ", "");
         try {

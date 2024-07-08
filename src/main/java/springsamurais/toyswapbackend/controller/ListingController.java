@@ -26,7 +26,6 @@ public class ListingController {
 
 
     @GetMapping("")
-    @PermitAll
     public ResponseEntity<List<Listing>> getAllItems() {
         List<Listing> listingList = listingService.getAllListings();
         return new ResponseEntity<>(listingList, HttpStatus.OK);
