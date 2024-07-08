@@ -1,3 +1,4 @@
+/*
 package springsamurais.toyswapbackend.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,4 +64,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-}
+}*/
