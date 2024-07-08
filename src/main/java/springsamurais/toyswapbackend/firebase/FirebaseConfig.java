@@ -27,7 +27,7 @@ public class FirebaseConfig {
             }
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setProjectId("toy-swap-ap")
+                    .setProjectId("toy-swap-api")
                     .build();
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
