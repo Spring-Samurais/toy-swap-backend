@@ -25,14 +25,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests((authorize) -> authorize
-                        .anyRequest().authenticated()
-                )
-                .httpBasic(Customizer.withDefaults())
-                .formLogin(Customizer.withDefaults());
-
-        return http.build();
+        return http
+                .csrf().disable()
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/api/v1/members/register").permitAll();
+                    auth.anyRequest().authenticated();
+                })
+                .build();
     }
 
 //    @Bean

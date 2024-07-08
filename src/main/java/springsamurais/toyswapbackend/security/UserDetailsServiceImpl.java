@@ -19,7 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Member> member = Optional.ofNullable(memberRepository.findByUsername(username));
+        Optional<Member> member = Optional.ofNullable(memberRepository.findByNickname(username));
         if (member.isPresent()) {
             return User.builder()
                     .username(member.get().getNickname())

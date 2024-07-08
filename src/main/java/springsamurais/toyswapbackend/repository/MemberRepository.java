@@ -6,5 +6,5 @@ import springsamurais.toyswapbackend.model.Member;
 
 @Repository
 public interface MemberRepository extends CrudRepository<Member, Long> {
-    Member findByUsername(String username);
+    Member findByNickname(String nickname);
 }
