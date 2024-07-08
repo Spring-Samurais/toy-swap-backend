@@ -51,7 +51,7 @@ class CommentControllerTest {
     @Test
     void getCommentsByUserId() throws Exception {
 
-        Member commenter = new Member(1L, "name", "member", "location", null);
+        Member commenter = new Member(1L, "name", "member", "location","password", null);
 
         Comment mockComment = new Comment();
         mockComment.setCommentId(1L);
@@ -72,7 +72,7 @@ class CommentControllerTest {
     @Test
     void getCommentsByListingId() throws Exception {
 
-        Member commenter = new Member(1L, "name", "member", "location", null);
+        Member commenter = new Member(1L, "name", "member", "location", "password",null);
 
         Comment mockComment = new Comment();
         mockComment.setCommentId(1L);
@@ -93,7 +93,7 @@ class CommentControllerTest {
     @Test
     void saveComment() throws Exception {
 
-        Member commenter = new Member(1L, "name", "member", "location", null);
+        Member commenter = new Member(1L, "name", "member", "location", "password",null);
 
         Comment mockComment = new Comment();
         mockComment.setCommentId(1L);

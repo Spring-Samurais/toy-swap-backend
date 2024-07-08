@@ -43,7 +43,7 @@ class ListingServiceImplementationTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        memberOne = new Member(1L, "Test Member", "member", "location", null);
+        memberOne = new Member(1L, "Test Member", "member", "location", "password",null);
 
         Listing listing = new Listing(1L, "A listing test", LocalDateTime.now(), Category.ACTION_FIGURES, "I am a description :-)", ItemCondition.GOOD, Status.AVAILABLE, memberOne, null, null);
         Listing listing2 = new Listing(2L, "Another listing test", LocalDateTime.now(), Category.DOLLS, "Description2", ItemCondition.LIKE_NEW, Status.PENDING, memberOne, null, null);
@@ -96,7 +96,7 @@ class ListingServiceImplementationTest {
         MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image content".getBytes());
         listingDTO.setImageFiles(Collections.singletonList(image));
 
-        Member member = new Member(1L, "Test Member", "member", "location", null);
+        Member member = new Member(1L, "Test Member", "member", "location", "password",null);
         Listing expectedListing = new Listing(6L, "New listing test", LocalDateTime.now(), Category.CONSTRUCTION_TOYS, "New description", ItemCondition.USED, Status.AVAILABLE, member, null, null);
 
         when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
