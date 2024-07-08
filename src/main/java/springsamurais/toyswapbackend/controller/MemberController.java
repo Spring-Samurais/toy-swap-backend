@@ -3,6 +3,7 @@ package springsamurais.toyswapbackend.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import springsamurais.toyswapbackend.exception.*;
 import springsamurais.toyswapbackend.model.Member;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/members")
 public class MemberController {
+
     @Autowired
     private MemberService memberService;
 
@@ -32,7 +34,7 @@ public class MemberController {
         }
     }
 
-    @PostMapping("")
+    @PostMapping("/register")
     public ResponseEntity<Member> addMember(@RequestBody Member member) {
         Member newMember = memberService.addMember(member);
         return new ResponseEntity<>(newMember, HttpStatus.CREATED);
