@@ -32,6 +32,7 @@ public class Member {
     @NotNull
     private String nickname;
 
+    private String password;
 
     private String location;
 
