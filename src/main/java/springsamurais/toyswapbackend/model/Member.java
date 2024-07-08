@@ -26,15 +26,16 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     private String name;
 
     @Column(unique = true)
     @NotNull
     private String nickname;
 
+    @Column
     private String password;
 
+    @Column
     private String location;
 
     @Column

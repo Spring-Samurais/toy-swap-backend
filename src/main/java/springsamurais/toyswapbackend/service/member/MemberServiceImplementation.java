@@ -61,5 +61,18 @@ public class MemberServiceImplementation implements MemberService {
         }
         memberRepository.deleteById(memberID);
     }
+
+    @Override
+    public Member loginChecker(String username, String password) throws MemberNotFoundException {
+        Member memberToCheck = memberRepository.findByNickname(username);
+
+        if (memberToCheck == null) {
+            throw new MemberNotFoundException("Member with username " + username + " not found");
+        }
+        if (!passwordEncoder.matches(password, memberToCheck.getPassword())) {
+            throw new MemberNotFoundException("Invalid password");
+        }
+        return memberToCheck;
+    }
 }
 

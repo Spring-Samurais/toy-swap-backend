@@ -40,6 +40,17 @@ public class MemberController {
         return new ResponseEntity<>(newMember, HttpStatus.CREATED);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
+        try {
+           Member foundMember =  memberService.loginChecker(username,password);
+            return new ResponseEntity<>(foundMember, HttpStatus.OK);
+        } catch (MemberNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+
+    }
+
     @PutMapping("/{memberID}")
     public ResponseEntity<?> updateMember(@PathVariable("memberID") Long memberID, @RequestBody Member member) {
         try {
