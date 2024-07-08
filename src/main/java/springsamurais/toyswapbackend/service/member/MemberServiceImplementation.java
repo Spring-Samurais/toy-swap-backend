@@ -2,7 +2,6 @@ package springsamurais.toyswapbackend.service.member;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springsamurais.toyswapbackend.exception.MemberNotFoundException;
@@ -20,8 +19,8 @@ public class MemberServiceImplementation implements MemberService {
 
     @Autowired
     MemberRepository memberRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+/*    @Autowired
+    PasswordEncoder passwordEncoder;*/
 
     @Override
 //    @Cacheable(value = "members", key = "#memberID")
@@ -40,7 +39,7 @@ public class MemberServiceImplementation implements MemberService {
 
     @Override
     public Member addMember(Member member) {
-        member.setPassword(passwordEncoder.encode(member.getPassword()));
+      //  member.setPassword(passwordEncoder.encode(member.getPassword()));
         return memberRepository.save(member);
     }
 
@@ -69,7 +68,7 @@ public class MemberServiceImplementation implements MemberService {
         if (memberToCheck == null) {
             throw new MemberNotFoundException("Member with username " + username + " not found");
         }
-        if (!passwordEncoder.matches(password, memberToCheck.getPassword())) {
+        if (!password.matches(password)) {
             throw new MemberNotFoundException("Invalid password");
         }
         return memberToCheck;
