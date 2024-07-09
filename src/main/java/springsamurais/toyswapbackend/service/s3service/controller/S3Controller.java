@@ -25,26 +25,22 @@ public class S3Controller {
     private ListingServiceImplementation listingServiceImplementation;
 
     @PostMapping("/{listingID}")
-    public ResponseEntity<?> uploadImage(
-            @PathVariable Long listingID,
-            @RequestParam("file") MultipartFile file)
-    {
+    public ResponseEntity<?> uploadImage(@PathVariable Long listingID, @RequestParam("file") MultipartFile file) {
 
         Listing listing = listingServiceImplementation.getListingById(listingID);
-
         if (listing == null) {
             return ResponseEntity.notFound().build();
         }
 
         List<Image> imagesList = new ArrayList<>();
 
-            String url = s3Service.uploadImageS3(file);
+        String url = s3Service.uploadImageS3(file);
 
-            Image image = new Image();
-            image.setImageName(file.getOriginalFilename());
-            image.setUrl(url);
-            image.setListing(listing);
-            imagesList.add(image);
+        Image image = new Image();
+        image.setImageName(file.getOriginalFilename());
+        image.setUrl(url);
+        image.setListing(listing);
+        imagesList.add(image);
 
         listing.setImages(imagesList);
         s3Service.uploadImageS3(file);
