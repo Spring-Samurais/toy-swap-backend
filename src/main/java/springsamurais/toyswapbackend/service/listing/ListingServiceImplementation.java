@@ -11,6 +11,7 @@ import springsamurais.toyswapbackend.exception.ListingNotFoundException;
 import springsamurais.toyswapbackend.exception.ListingFailedToSaveException;
 import springsamurais.toyswapbackend.exception.MemberNotFoundException;
 import springsamurais.toyswapbackend.model.*;
+import springsamurais.toyswapbackend.repository.ImageRepository;
 import springsamurais.toyswapbackend.repository.ListingRepository;
 import springsamurais.toyswapbackend.service.member.MemberServiceImplementation;
 import springsamurais.toyswapbackend.service.s3service.service.S3Service;
@@ -26,6 +27,8 @@ public class ListingServiceImplementation implements ListingService {
 
     @Autowired
     ListingRepository listingRepository;
+    @Autowired
+    ImageRepository imageRepository;
     @Autowired
     MemberServiceImplementation memberService;
     @Autowired
@@ -91,12 +94,15 @@ public class ListingServiceImplementation implements ListingService {
     @Override
     public boolean deleteListingById(Long listingID) throws ListingNotFoundException {
 
-        if (!listingRepository.existsById(listingID)) {
-            throw new ListingNotFoundException("Listing with ID " + listingID + " not found");
-        } else {
-            listingRepository.deleteById(listingID);
+            Listing listing = listingRepository.findById(listingID)
+                    .orElseThrow(() -> new ListingNotFoundException("Listing with ID " + listingID + " not found"));
+
+            if(!listing.getImages().isEmpty()) {
+                imageRepository.deleteByListingId(listing.getImages().getFirst().getId());
+            }
+
+            listingRepository.delete(listingID);
             return true;
-        }
     }
 
     @Override

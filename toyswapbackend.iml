@@ -5,4 +5,17 @@
       <excludeFolder url="file://$MODULE_DIR$/.idea/httpRequests" />
     </content>
   </component>
+  <component name="FacetManager">
+    <facet type="jpa" name="JPA">
+      <configuration>
+        <setting name="validation-enabled" value="true" />
+        <setting name="provider-name" value="Hibernate" />
+        <datasource-mapping>
+          <factory-entry name="entityManagerFactory" />
+          <factory-entry name="toyswapbackend" value="3e1bf781-e2a3-432d-b30d-55e3730aa458" />
+        </datasource-mapping>
+        <naming-strategy-map />
+      </configuration>
+    </facet>
+  </component>
 </module>

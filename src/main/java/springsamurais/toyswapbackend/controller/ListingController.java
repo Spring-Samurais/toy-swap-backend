@@ -89,7 +89,7 @@ public class ListingController {
     public ResponseEntity<?> deleteItem(@PathVariable("listingID") Long listingID) {
         boolean result;
          result = listingService.deleteListingById(listingID);
-         if (result) return new ResponseEntity<>(HttpStatus.ACCEPTED);
+         if (result) return new ResponseEntity<>("Listing deleted",HttpStatus.ACCEPTED);
         else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
