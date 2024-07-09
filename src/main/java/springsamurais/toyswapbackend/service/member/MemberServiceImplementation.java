@@ -63,7 +63,7 @@ public class MemberServiceImplementation implements MemberService {
 
     @Override
     public Member loginChecker(String username, String password) throws MemberNotFoundException {
-        Member memberToCheck = memberRepository.findByNickname(username);
+        Member memberToCheck = memberRepository.findByUsername(username);
 
         if (memberToCheck == null) {
             throw new MemberNotFoundException("Member with username " + username + " not found");
