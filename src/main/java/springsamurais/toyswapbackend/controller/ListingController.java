@@ -79,9 +79,7 @@ public class ListingController {
       if (condition != null) existingListing.setCondition(ItemCondition.valueOf(condition));
       if (statusListing != null) existingListing.setStatusListing(Status.valueOf(statusListing));
 
-
-
-        return new ResponseEntity<>(listingService.updateListing(existingListing), HttpStatus.OK);
+      return new ResponseEntity<>(listingService.updateListing(existingListing), HttpStatus.OK);
     }
 
 
