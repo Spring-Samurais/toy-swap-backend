@@ -43,13 +43,13 @@ class ListingServiceImplementationTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        memberOne = new Member(1L, "Test Member", "member", "location", "password",null);
+        memberOne = new Member(1L, "Test Member", "member", "something", "location", "password",null);
 
         Listing listing = new Listing(1L, "A listing test", LocalDateTime.now(), Category.ACTION_FIGURES, "I am a description :-)", ItemCondition.GOOD, Status.AVAILABLE, memberOne, null, null);
-        Listing listing2 = new Listing(2L, "Another listing test", LocalDateTime.now(), Category.DOLLS, "Description2", ItemCondition.LIKE_NEW, Status.PENDING, memberOne, null, null);
-        Listing listing3 = new Listing(3L, "Third listing test", LocalDateTime.now(), Category.CONSTRUCTION_TOYS, "Description3", ItemCondition.LIKE_NEW, Status.SWAPPED, memberOne, null, null);
+            Listing listing2 = new Listing(2L, "Another listing test", LocalDateTime.now(), Category.DOLLS, "Description2", ItemCondition.LIKE_NEW, Status.AVAILABLE, memberOne, null, null);
+        Listing listing3 = new Listing(3L, "Third listing test", LocalDateTime.now(), Category.CONSTRUCTION_TOYS, "Description3", ItemCondition.LIKE_NEW, Status.AVAILABLE, memberOne, null, null);
         Listing listing4 = new Listing(4L, "Fourth listing test", LocalDateTime.now(), Category.VEHICLES, "Description4", ItemCondition.USED, Status.AVAILABLE, memberOne, null, null);
-        Listing listing5 = new Listing(5L, "Fifth listing test", LocalDateTime.now(), Category.EDUCATIONAL_TOYS, "Description5", ItemCondition.DAMAGED, Status.PENDING, memberOne, null, null);
+        Listing listing5 = new Listing(5L, "Fifth listing test", LocalDateTime.now(), Category.EDUCATIONAL_TOYS, "Description5", ItemCondition.DAMAGED, Status.AVAILABLE, memberOne, null, null);
         listings = Arrays.asList(listing, listing2, listing3, listing4, listing5);
     }
 
@@ -96,7 +96,7 @@ class ListingServiceImplementationTest {
         MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image content".getBytes());
         listingDTO.setImageFiles(Collections.singletonList(image));
 
-        Member member = new Member(1L, "Test Member", "member", "location", "password",null);
+        Member member = new Member(1L, "Test Member", "member", "something", "location", "password",null);
         Listing expectedListing = new Listing(6L, "New listing test", LocalDateTime.now(), Category.CONSTRUCTION_TOYS, "New description", ItemCondition.USED, Status.AVAILABLE, member, null, null);
 
         when(memberRepository.findById(1L)).thenReturn(Optional.of(member));

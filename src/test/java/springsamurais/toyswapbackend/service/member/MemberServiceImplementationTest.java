@@ -155,7 +155,7 @@ class MemberServiceImplementationTest {
     public void testGetMemberByID_CacheHit() throws MemberNotFoundException {
         // Mock data
         Long memberId = 1L;
-        Member mockMember = new Member(memberId, "Test Member", "test", "Location","pass", new ArrayList<>());
+        Member mockMember = new Member(memberId, "Test Member", "test", "something", "Location","pass", new ArrayList<>());
 
         // Mock repository method to return a member
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(mockMember));
