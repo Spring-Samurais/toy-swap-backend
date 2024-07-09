@@ -39,8 +39,8 @@ class MemberControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         this.mockMvc = MockMvcBuilders.standaloneSetup(memberController).build();
-        memberOne = new Member(1L, "Andrew", "Andy", "London", "password", null);
-        Member memberTwo = new Member(2L, "Samuel", "Sam", "Wembley", "password",null);
+        memberOne = new Member(1L, "Andrew", "Andy", "London", "password","email", null);
+        Member memberTwo = new Member(2L, "Samuel", "Sam", "Wembley", "password","location",null);
 
         membersList = Arrays.asList(memberOne, memberTwo);
     }
