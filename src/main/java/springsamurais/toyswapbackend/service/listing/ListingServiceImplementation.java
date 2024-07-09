@@ -89,11 +89,14 @@ public class ListingServiceImplementation implements ListingService {
 
 
     @Override
-//    @CacheEvict(value = "listings", key = "#listingID")
-    public void deleteListingById(Long listingID) throws ListingNotFoundException {
+    public boolean deleteListingById(Long listingID) throws ListingNotFoundException {
 
-        Listing listing = listingRepository.findById(listingID).orElseThrow(() -> new ListingNotFoundException("Listing with ID " + listingID + " not found"));
-        listingRepository.delete(listing);
+        if (!listingRepository.existsById(listingID)) {
+            throw new ListingNotFoundException("Listing with ID " + listingID + " not found");
+        } else {
+            listingRepository.deleteById(listingID);
+            return true;
+        }
     }
 
     @Override

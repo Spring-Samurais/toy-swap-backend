@@ -87,9 +87,10 @@ public class ListingController {
 
     @DeleteMapping("/{listingID}")
     public ResponseEntity<?> deleteItem(@PathVariable("listingID") Long listingID) {
-        listingService.deleteListingById(listingID);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-
+        boolean result;
+         result = listingService.deleteListingById(listingID);
+         if (result) return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/member/{memberID}")

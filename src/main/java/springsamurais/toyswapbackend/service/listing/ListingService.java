@@ -13,7 +13,7 @@ public interface ListingService {
    Listing getListingById(Long id);
    Listing saveListing(ListingDTO listing) throws ListingNotFoundException;
    Listing updateListing(Listing listing);
-   void deleteListingById(Long listingID) throws ListingNotFoundException;
+   boolean deleteListingById(Long listingID) throws ListingNotFoundException;
    void deleteListingsByMember(Long memberID) throws ListingNotFoundException, MemberNotFoundException;
 
 }
