@@ -23,6 +23,7 @@ public class ListingController {
     private ListingServiceImplementation listingService;
 
 
+
     @GetMapping("")
     public ResponseEntity<List<Listing>> getAllItems() {
         List<Listing> listingList = listingService.getAllListings();
@@ -60,11 +61,27 @@ public class ListingController {
 
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateListing(@RequestBody Listing listing) {
-        Listing updatedListing = listingService.updateListing(listing);
-        return new ResponseEntity<>(updatedListing, HttpStatus.OK);
 
+    @PatchMapping("/{listingID}")
+    public ResponseEntity<?> updateListing(
+            @PathVariable Long listingID,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "condition" , required = false) String condition,
+            @RequestParam(value = "statusListing", required = false) String statusListing)
+    {
+      Listing existingListing = listingService.getListingById(listingID);
+
+      if (title != null) existingListing.setTitle(title);
+      if(category != null) existingListing.setCategory(Category.valueOf(category));
+      if (description != null) existingListing.setDescription(description);
+      if (condition != null) existingListing.setCondition(ItemCondition.valueOf(condition));
+      if (statusListing != null) existingListing.setStatusListing(Status.valueOf(statusListing));
+
+
+
+        return new ResponseEntity<>(listingService.updateListing(existingListing), HttpStatus.OK);
     }
 
 
