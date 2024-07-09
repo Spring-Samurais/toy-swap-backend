@@ -33,7 +33,12 @@ public class Member {
     private String nickname;
 
     @Column
+    @NotNull
     private String password;
+
+    @Column(unique = true)
+    @NotNull
+    private String email;
 
     @Column
     private String location;
@@ -42,7 +47,6 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonIgnoreProperties({"photo", "datePosted", "category", "description", "condition", "statusListing", "comments", "member"})
-    //@JoinColumn(name = "", nullable = false)
     @JsonManagedReference
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Listing> listings;
