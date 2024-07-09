@@ -23,10 +23,10 @@ public class Comment {
     private Long commentId;
 
     @Column(nullable = false)
+    @Lob
     private String text;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    //@JoinColumn(name = "", nullable = false)
     @JsonIgnoreProperties({"listings"})
     private Member commenter;
 
