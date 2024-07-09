@@ -31,6 +31,7 @@ public class Listing {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Lob
     @Column(nullable = false)
     private String description;
 
