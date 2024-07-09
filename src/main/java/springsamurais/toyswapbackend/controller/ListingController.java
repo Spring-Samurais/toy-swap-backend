@@ -65,11 +65,11 @@ public class ListingController {
     @PatchMapping("/{listingID}")
     public ResponseEntity<?> updateListing(
             @PathVariable Long listingID,
-            @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "category", required = false) String category,
-            @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "condition" , required = false) String condition,
-            @RequestParam(value = "statusListing", required = false) String statusListing)
+            @RequestPart(value = "title", required = false) String title,
+            @RequestPart(value = "category", required = false) String category,
+            @RequestPart(value = "description", required = false) String description,
+            @RequestPart(value = "condition" , required = false) String condition,
+            @RequestPart(value = "statusListing", required = false) String statusListing)
     {
       Listing existingListing = listingService.getListingById(listingID);
 
