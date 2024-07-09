@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springsamurais.toyswapbackend.exception.*;
 import springsamurais.toyswapbackend.model.Member;
+import springsamurais.toyswapbackend.model.MemberDTO;
 import springsamurais.toyswapbackend.service.member.MemberService;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/members")
 public class MemberController {
+
     @Autowired
     private MemberService memberService;
 
@@ -32,10 +34,21 @@ public class MemberController {
         }
     }
 
-    @PostMapping("")
+    @PostMapping("/register")
     public ResponseEntity<Member> addMember(@RequestBody Member member) {
         Member newMember = memberService.addMember(member);
         return new ResponseEntity<>(newMember, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody MemberDTO userLogin) {
+        try {
+           Member foundMember =  memberService.loginChecker(userLogin.username(), userLogin.password());
+            return new ResponseEntity<>(foundMember, HttpStatus.OK);
+        } catch (MemberNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @PutMapping("/{memberID}")

@@ -22,11 +22,10 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
-    @Column(nullable = false)
+    @Column(nullable = false,  length = 1000)
     private String text;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    //@JoinColumn(name = "", nullable = false)
     @JsonIgnoreProperties({"listings"})
     private Member commenter;
 

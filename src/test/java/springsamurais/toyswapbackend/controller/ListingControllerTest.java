@@ -48,7 +48,7 @@ class ListingControllerTest {
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(listingController).build();
         mapper = new ObjectMapper();
-        memberOne = new Member(1L, "Test Member", "member", "location", null);
+        memberOne = new Member(1L, "Test Member", "member", "location","password","something", null);
     }
 
 

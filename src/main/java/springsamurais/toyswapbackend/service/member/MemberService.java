@@ -14,4 +14,5 @@ public interface MemberService {
     Member addMember(Member member);
     Member updateMember(Long memberID, Member member) throws MemberNotFoundException;
     void deleteMemberByID(Long memberID) throws MemberNotFoundException;
+    Member loginChecker(String username, String password) throws MemberNotFoundException;
 }

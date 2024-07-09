@@ -19,6 +19,8 @@ public class MemberServiceImplementation implements MemberService {
 
     @Autowired
     MemberRepository memberRepository;
+/*    @Autowired
+    PasswordEncoder passwordEncoder;*/
 
     @Override
 //    @Cacheable(value = "members", key = "#memberID")
@@ -37,6 +39,7 @@ public class MemberServiceImplementation implements MemberService {
 
     @Override
     public Member addMember(Member member) {
+      //  member.setPassword(passwordEncoder.encode(member.getPassword()));
         return memberRepository.save(member);
     }
 
@@ -56,6 +59,19 @@ public class MemberServiceImplementation implements MemberService {
             throw new MemberNotFoundException("Member with ID " + memberID + " not found");
         }
         memberRepository.deleteById(memberID);
+    }
+
+    @Override
+    public Member loginChecker(String username, String password) throws MemberNotFoundException {
+        Member memberToCheck = memberRepository.findByUsername(username);
+
+        if (memberToCheck == null) {
+            throw new MemberNotFoundException("Member with username " + username + " not found");
+        }
+        if (!password.matches(password)) {
+            throw new MemberNotFoundException("Invalid password");
+        }
+        return memberToCheck;
     }
 }
 

@@ -49,7 +49,6 @@ public class CommentsServiceImplementation implements CommentsService {
     @Override
     public Comment saveComment(CommentDTO commentDTO) {
         try {
-            System.out.println("inside savecommentService");
             Member memCommenter = memberRepository.findById(commentDTO.getCommenterId())
                     .orElseThrow(() -> new MemberNotFoundException("Member not found with ID " + commentDTO.getCommenterId()));
 
@@ -59,8 +58,8 @@ public class CommentsServiceImplementation implements CommentsService {
             Comment comment = commentDTO.toEntity(memCommenter, listing);
 
             return commentsRepository.save(comment);
-        } catch (Exception e) {
-            throw new CommentFailedToSaveException("Comment failed to save: " + e.getMessage());
+        } catch (ListingNotFoundException | MemberNotFoundException e) {
+            throw new CommentFailedToSaveException("Comment failed to save: " + e.getMessage() + " " + e.getClass());
         }
     }
 

@@ -37,11 +37,11 @@ class MemberServiceImplementationTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        member = new Member(1L, "Andrew", "Andy", "London", null);
+        member = new Member(1L, "Andrew", "Andy", "London","pass", "email",null);
 
         membersList = new ArrayList<>();
         membersList.add(member);
-        membersList.add(new Member(2L, "Nicolas", "Nick", "Cardiff", null));
+        membersList.add(new Member(2L, "Nicolas", "Nick", "Cardiff","pass", "email",null));
 
     }
 
@@ -155,7 +155,7 @@ class MemberServiceImplementationTest {
     public void testGetMemberByID_CacheHit() throws MemberNotFoundException {
         // Mock data
         Long memberId = 1L;
-        Member mockMember = new Member(memberId, "Test Member", "test", "Location", new ArrayList<>());
+        Member mockMember = new Member(memberId, "Test Member", "test", "something", "Location","pass", new ArrayList<>());
 
         // Mock repository method to return a member
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(mockMember));

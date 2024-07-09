@@ -40,7 +40,6 @@ public class ListingServiceImplementation implements ListingService {
     }
 
     @Override
-//    @Cacheable(value = "listings", key = "#id")
     public Listing getListingById(Long id) {
         return listingRepository.findById(id).orElseThrow(() -> new ListingNotFoundException("Listing with ID " + id + " not found"));
     }
@@ -57,7 +56,6 @@ public class ListingServiceImplementation implements ListingService {
         return listingRepository.save(listing);
     }
     @Override
-//    @CachePut(value = "listings", key = "#listing.id")
     public Listing updateListing(Listing listing)  {
         validateListing(listing);
 
