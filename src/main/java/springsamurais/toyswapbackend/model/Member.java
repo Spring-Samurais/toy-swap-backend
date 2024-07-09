@@ -30,7 +30,7 @@ public class Member {
 
     @Column(unique = true)
     @NotNull
-    private String nickname;
+    private String username;
 
     @Column
     @NotNull
