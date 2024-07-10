@@ -72,12 +72,14 @@ public class ListingController {
             @RequestPart(value = "statusListing", required = false) String statusListing)
     {
       Listing existingListing = listingService.getListingById(listingID);
-
+        if (statusListing != null){
+            String cleanStatus = statusListing.replaceAll("\"","");
+            existingListing.setStatusListing(Status.valueOf(cleanStatus));
+        }
       if (title != null) existingListing.setTitle(title);
       if(category != null) existingListing.setCategory(Category.valueOf(category));
       if (description != null) existingListing.setDescription(description);
-      if (condition != null) existingListing.setCondition(ItemCondition.valueOf(condition));
-      if (statusListing != null) existingListing.setStatusListing(Status.valueOf(statusListing));
+      if (condition != null) {existingListing.setCondition(ItemCondition.valueOf(condition));}
 
       return new ResponseEntity<>(listingService.updateListing(existingListing), HttpStatus.OK);
     }
