@@ -94,7 +94,7 @@ class ListingServiceImplementationTest {
         listingDTO.setStatusListing("AVAILABLE");
 
         MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image content".getBytes());
-        listingDTO.setImageFiles(Collections.singletonList(image));
+        listingDTO.setImageFiles(image);
 
         Member member = new Member(1L, "Test Member", "member", "something", "location", "password",null);
         Listing expectedListing = new Listing(6L, "New listing test", LocalDateTime.now(), Category.CONSTRUCTION_TOYS, "New description", ItemCondition.USED, Status.AVAILABLE, member, null, null);

@@ -22,7 +22,7 @@ public class ListingDTO {
     private String description;
     private String condition;
     private String statusListing;
-    private List<MultipartFile> imageFiles;
+    private MultipartFile imageFiles;
 
 
     public Listing toEntity(Member member, S3Service s3Service) throws IOException {
@@ -38,19 +38,11 @@ public class ListingDTO {
         listing.setComments(null);
 
 
-        List<Image> imagesList = new ArrayList<>();
-        //TODO Stream this iteration :D
-        for (MultipartFile file : imageFiles) {
 
-            String url = s3Service.uploadImageS3(file);
+        String url= s3Service.uploadImageS3(imageFiles);
+            listing.setImages(url);
 
-            Image image = new Image();
-            image.setImageName(file.getOriginalFilename());
-            image.setUrl(url);
-            image.setListing(listing);
-            imagesList.add(image);
-        }
-        listing.setImages(imagesList);
+
 
         return listing;
     }

@@ -32,7 +32,7 @@ public class S3Controller {
             return ResponseEntity.notFound().build();
         }
 
-        List<Image> imagesList = new ArrayList<>();
+
 
         String url = s3Service.uploadImageS3(file);
 
@@ -40,9 +40,7 @@ public class S3Controller {
         image.setImageName(file.getOriginalFilename());
         image.setUrl(url);
         image.setListing(listing);
-        imagesList.add(image);
-
-        listing.setImages(imagesList);
+        listing.setImages(url);
         s3Service.uploadImageS3(file);
         return new ResponseEntity<>(listing, HttpStatus.ACCEPTED);
     }

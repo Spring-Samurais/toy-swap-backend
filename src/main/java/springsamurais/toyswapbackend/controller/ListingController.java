@@ -46,7 +46,7 @@ public class ListingController {
             @RequestParam("description") String description,
             @RequestParam("condition") String condition,
             @RequestParam("statusListing") String listingStatus,
-            @RequestPart("images") List<MultipartFile> images) {
+            @RequestPart("images") MultipartFile images) {
 
         ListingDTO dto = new ListingDTO();
         dto.setTitle(title);

@@ -94,12 +94,8 @@ public class ListingServiceImplementation implements ListingService {
     @Override
     public boolean deleteListingById(Long listingID) throws ListingNotFoundException {
 
-            Listing listing = listingRepository.findById(listingID)
+        listingRepository.findById(listingID)
                     .orElseThrow(() -> new ListingNotFoundException("Listing with ID " + listingID + " not found"));
-
-            if(!listing.getImages().isEmpty()) {
-                imageRepository.deleteByListingId(listing.getImages().getFirst().getId());
-            }
 
             listingRepository.delete(listingID);
             return true;

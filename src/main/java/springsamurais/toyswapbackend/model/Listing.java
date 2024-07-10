@@ -52,10 +52,8 @@ public class Listing {
     @JsonManagedReference
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // Avoid nasty r
-    @JsonIgnoreProperties({"id","imageName"})
-    private List<Image> images;
+    @Column
+    private String images;
 
 
 }
